@@ -5,8 +5,8 @@ name = "salesforce.marketingcloud"
 version = "0.1.0"
 license = ["Apache-2.0"]
 authors = ["Ballerina"]
-keywords = [] # TODO: Add keywords
-# icon = "icon.png" # TODO: Add icon
+keywords = ["marketing", "sales", "communication"]
+icon = "icon.png" 
 repository = "https://github.com/ballerina-platform/module-ballerinax-salesforce.marketingcloud"
 
 [build-options]
