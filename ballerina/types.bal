@@ -20,6 +20,7 @@
 import ballerina/constraint;
 import ballerina/data.jsondata;
 import ballerina/http;
+import ballerina/oauth2;
 
 public type EventDefinitionList record {
     int pageSize?;
@@ -30,8 +31,12 @@ public type EventDefinitionList record {
 # OAuth2 Client Credentials Grant Configs
 public type OAuth2ClientCredentialsGrantConfig record {|
     *http:OAuth2ClientCredentialsGrantConfig;
-    # Token URL
-    string tokenUrl = "https://{{et_subdomain}}.auth.marketingcloudapis.com/v2/token";
+    # Token url should not be provided
+    never tokenUrl?;
+    # Credential Bearer type to use for the request
+    oauth2:CredentialBearer credentialBearer = oauth2:POST_BODY_BEARER;
+    # The member ID (MID) of your Marketing Cloud account
+    string accountId?;
 |};
 
 public type ValidateEmailResponse record {

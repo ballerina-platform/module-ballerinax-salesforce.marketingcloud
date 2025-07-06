@@ -27,3 +27,47 @@ The following command was used to generate the Ballerina client from the OpenAPI
 bal openapi -i docs/spec/openapi.json -o ballerina --mode client --client-methods remote --license docs/license.txt
 ```
 Note: The license year is hardcoded to 2025, change if necessary.
+
+## Sanitation for Generated Client
+
+The following changes were made to the generated client to support multi-tenancy in the Marketing Cloud APIs:
+
+1. The `serviceUrl` client parameter was removed and replaced with a required `subDomain` parameter to better represent tenant-specific endpoints.
+   ```ballerina
+   // Before
+   public isolated function init(ConnectionConfig config, string serviceUrl = "https://{{et_subdomain}}.rest.marketingcloudapis.com") returns error? {
+   // After
+   public isolated function init(string subDomain, ConnectionConfig config) returns error? {
+   ```
+
+2. The `serviceUrl` and `auth` values are now dynamically constructed within the `init` method using the provided `subDomain`.
+   ```ballerina
+   // Before
+   http:ClientConfiguration httpClientConfig = {auth: config.auth, ...};
+   // After
+   string serviceUrl = string `https://${subDomain}.rest.marketingcloudapis.com`;
+   http:ClientConfiguration httpClientConfig = {auth: getUpdatedAuthConfig(config.auth, subDomain), ...};
+   ```
+
+3. The authentication configuration in `types.bal` (`OAuth2ClientCredentialsGrantConfig`) was updated to allow overriding the `credentialBearer` property, enabling tenant-specific credential management.
+   ```ballerina
+   // Before
+   public type OAuth2ClientCredentialsGrantConfig record {| 
+       *http:OAuth2ClientCredentialsGrantConfig;
+       # Token URL
+       string tokenUrl = "https://{{et_subdomain}}.auth.marketingcloudapis.com/v2/token";
+   |};
+
+   // After
+   public type OAuth2ClientCredentialsGrantConfig record {| 
+       *http:OAuth2ClientCredentialsGrantConfig;
+       # Credential Bearer type to use for the request
+       oauth2:CredentialBearer credentialBearer = oauth2:POST_BODY_BEARER;
+       # Token Url
+       string tokenUrl = "";
+       # The member ID (MID) of your Marketing Cloud account
+       string accountId?;
+   |};
+   ```
+
+4. Introduced a new `utils_additional.bal` file for supplementary utility functions.
