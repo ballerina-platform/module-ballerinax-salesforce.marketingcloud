@@ -1,0 +1,14 @@
+[package]
+org = "wso2"
+name = "seasonal_journey"
+version = "0.1.0"
+distribution = "2201.12.7"
+
+[build-options]
+observabilityIncluded = true
+
+[[dependency]]
+org = "ballerinax"
+name = "salesforce.marketingcloud"
+version = "0.1.0"
+repository="local"

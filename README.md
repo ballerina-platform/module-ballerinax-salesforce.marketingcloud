@@ -20,7 +20,7 @@
 
 The `salesforce.marketingcloud` connector provides practical examples illustrating usage in various scenarios. Explore these [examples](https://github.com/module-ballerinax-salesforce.marketingcloud/tree/main/examples/), covering the following use cases:
 
-[//]: # (TODO: Add examples)
+1. [Seasonal Journey](https://github.com/ballerina-platform/module-ballerinax-salesforce.marketingcloud/tree/main/examples/seasonal-journey) – Shows how to enroll new users into the Seasonal Journey by adding a row to a Data Extension, with checks to prevent enrolling users who are already part of the Rewin Journey.
 
 ## Build from the source
 
