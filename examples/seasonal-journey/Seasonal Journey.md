@@ -1,4 +1,4 @@
-# Enrol users to Seasonal Journey 
+# Enroll users to Seasonal Journey 
 
 This example shows how to enroll new users into the Seasonal Journey by adding a row to a Data Extension, with checks to prevent enrolling users who are already part of the Rewin Journey.
 
