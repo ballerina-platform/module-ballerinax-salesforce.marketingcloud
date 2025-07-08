@@ -30,24 +30,28 @@ type User record {
     string signupSource;
 };
 
-mc:Client marketingCloudClient = check new (
-    subDomain,
-    config = {
-        auth: {
-            clientId,
-            clientSecret,
-            accountId
-        }
-    }
-);
-
 const string REWIN_JOURNEY_DEFINITION_KEY = "aa0c871b-d1eb-66fb-c039-0a7cab4e20cd";
 const string DE_DEFINITION_KEY = "DecSeasonal25";
 
 service /marketing/journey on new http:Listener(9090) {
 
+    mc:Client marketingCloud;
+
+    function init() returns error? {
+        self.marketingCloud = check new (
+            subDomain,
+            config = {
+                auth: {
+                    clientId,
+                    clientSecret,
+                    accountId
+                }
+            }
+        );
+    }
+
     resource function post seasonal(User newUser) returns http:Ok|error {
-        mc:ContactMembershipResponse res = check marketingCloudClient->getContactMembership({
+        mc:ContactMembershipResponse res = check self.marketingCloud->getContactMembership({
             contactKeyList: [newUser.email]
         });
 
@@ -59,7 +63,7 @@ service /marketing/journey on new http:Listener(9090) {
             }
         }
 
-        _ = check marketingCloudClient->upsertDERowSetByKey(DE_DEFINITION_KEY, [
+        _ = check self.marketingCloud->upsertDERowSetByKey(DE_DEFINITION_KEY, [
             {
                 keys: {
                     "id": newUser.userId
