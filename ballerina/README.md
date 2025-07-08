@@ -71,7 +71,7 @@ Extract the subdomain by taking the portion between `https://` and `.auth.market
 ### Step 6: Retrieve your account id if necessary
 
 Navigate to the top right corner of your SFMC account interface, hover over your account name, and the MID will be displayed.
->> **Note:** This is only needed if the cloud account has more than one bussiness units.
+>> **Note:** This is only needed if the cloud account has more than one business units.
 
 ![Account id](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-salesforce.marketingcloud/main/docs/setup/resources/11-account-id.png)
 
