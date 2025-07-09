@@ -110,3 +110,10 @@ public function updateContact() returns error? {
     });
     test:assertEquals(upsertContactResponse.isNewContactKey, false, msg = "Expected isNewContactKey to be false, but got true");
 }
+
+@test:Config {
+}
+public function getCampaigns() returns error? {
+    CampaignList response = check mcClient->getCampaigns();
+    test:assertNotEquals(response.items, [], msg = "Expected non-empty campaigns list, but got empty list");
+}
