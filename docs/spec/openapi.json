@@ -1517,6 +1517,254 @@
           }
         }
       }
+    },
+    "/asset/v1/content/assets" : {
+      "get" : {
+        "tags" : [ "Messaging & Journeys > REST > Content" ],
+        "summary" : "Get Content Assets",
+        "description" : "Retrieves a list of content assets.",
+        "operationId" : "getAssets",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/page"
+        }, {
+          "$ref" : "#/components/parameters/pageSize"
+        }, {
+          "name" : "$orderBy",
+          "in" : "query",
+          "description" : "Determines which asset property to use for sorting, and also determines the direction in which to sort the data. If you don't provide the $orderBy parameter, the results are sorted by asset ID in ascending order",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "x-ballerina-name" : "orderBy"
+        }, {
+          "name" : "$filter",
+          "in" : "query",
+          "description" : "Filter by an asset's property using a simple operator and value",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "x-ballerina-name" : "filter"
+        }, {
+          "name" : "$fields",
+          "in" : "query",
+          "description" : "Comma-delimited string of asset properties used to reduce the size of your results to only the properties you need",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "x-ballerina-name" : "fields"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of content assets",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AssetList"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Messaging & Journeys > REST > Content" ],
+        "summary" : "Create Content Asset",
+        "description" : "Creates a new content asset with the specified information.",
+        "operationId" : "createAsset",
+        "requestBody" : {
+          "description" : "Payload to be sent with the request",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpsertAsset"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Content asset created successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Asset"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/asset/v1/content/assets/{id}" : {
+      "delete" : {
+        "tags" : [ "Messaging & Journeys > REST > Content" ],
+        "summary" : "Delete Content Asset",
+        "description" : "Deletes a content asset by ID.",
+        "operationId" : "deleteAsset",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "ID of the content asset to delete",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "isCDNDelete",
+          "in" : "query",
+          "description" : "Permanently deletes the file and its URL in Akamai when the associated file is deleted in Content Builder. A value of 1 permanently deletes the file. If isCDNDelete is unspecified or if the value is 0, it doesn’t permanently delete the file",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "boolean"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Content asset deleted successfully"
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "Messaging & Journeys > REST > Content" ],
+        "summary" : "Update Content Asset",
+        "description" : "Updates an existing content asset with the specified information.",
+        "operationId" : "updateAsset",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "ID of the content asset to update",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Payload to be sent with the request",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpsertAsset"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Content asset updated successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Asset"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/asset/v1/content/categories" : {
+      "get" : {
+        "tags" : [ "Messaging & Journeys > REST > Content" ],
+        "summary" : "Get Content Categories",
+        "description" : "Retrieves a list of content categories.",
+        "operationId" : "getCategories",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/page"
+        }, {
+          "$ref" : "#/components/parameters/pageSize"
+        }, {
+          "name" : "$filter",
+          "in" : "query",
+          "description" : "Filter by ParentId using a simple operator and value. ParentId is the only allowed field. If you don't provide a $filter parameter, the query returns all the Categories in your MID",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "x-ballerina-name" : "filter"
+        }, {
+          "name" : "$orderBy",
+          "in" : "query",
+          "description" : "Determines which category property to use for sorting, and also determines the direction in which to sort the data. If you don't provide the $orderBy parameter, the results are sorted by category ID in ascending order",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "x-ballerina-name" : "orderBy"
+        }, {
+          "name" : "scope",
+          "in" : "query",
+          "description" : "Determines which MIDs the query results come from. To return categories that reside in your MID, either don't add the scope parameter or call the endpoint like this: .../categories?scope=Ours. To return categories that are shared to your MID, or that you have shared with other MIDs, call the endpoint like this: .../categories?scope=Shared. To return all categories visible to your MID, call the endpoint like this: .../categories?scope=Ours,Shared",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "Ours", "Shared", "Ours,Shared" ]
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of content categories",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CategoryList"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Messaging & Journeys > REST > Content" ],
+        "summary" : "Create Content Category",
+        "description" : "Creates a new content category with the specified information.",
+        "operationId" : "createCategory",
+        "requestBody" : {
+          "description" : "Payload to be sent with the request",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateCategory"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Content category created successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Category"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -1640,6 +1888,44 @@
             "description" : "Ordinal value of retrieved address"
           }
         }
+      },
+      "UpsertAsset" : {
+        "required" : [ "assetType", "name" ],
+        "type" : "object",
+        "properties" : {
+          "customerKey" : {
+            "type" : "string",
+            "description" : "Reference to customer's private ID/name for the asset"
+          },
+          "data" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "Container for asset data"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Name of the asset, set by the client. 200 character maximum"
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Description of the asset, set by the client"
+          },
+          "category" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "ID of the category the asset belongs to"
+          },
+          "contentType" : {
+            "type" : "string",
+            "description" : "The type that the Content attribute is in"
+          },
+          "assetType" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "The type of the asset saved as a name/ID pair"
+          }
+        },
+        "description" : "Request body for creating or updating a content asset"
       },
       "JourneysList" : {
         "required" : [ "count", "items", "page", "pageSize" ],
@@ -2078,6 +2364,49 @@
           }
         },
         "description" : "Response for upserting contact preferences"
+      },
+      "Asset" : {
+        "required" : [ "assetType", "category", "customerKey", "id", "name" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "Unique identifier of the asset."
+          },
+          "customerKey" : {
+            "type" : "string",
+            "description" : "Reference to customer's private ID/name for the asset."
+          },
+          "contentType" : {
+            "type" : "string",
+            "description" : "The type that the Content attribute is in."
+          },
+          "data" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "Container for asset data."
+          },
+          "assetType" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "The type of the asset saved as a name/ID pair."
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Name of the asset, set by the client. 200 character maximum."
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Description of the asset, set by the client."
+          },
+          "category" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "ID of the category the asset belongs to."
+          }
+        },
+        "additionalProperties" : true,
+        "description" : "Represents a content asset in Salesforce Marketing Cloud"
       },
       "ContactAttributeName" : {
         "type" : "string",
@@ -2579,6 +2908,48 @@
           }
         }
       },
+      "Category" : {
+        "required" : [ "categoryType", "enterpriseId", "id", "memberId", "name", "parentId" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "System-assigned ID for the category."
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Name of the category."
+          },
+          "parentId" : {
+            "type" : "number",
+            "description" : "ID of the parent category."
+          },
+          "categoryType" : {
+            "type" : "string",
+            "description" : "The type of category, either asset or asset-shared."
+          },
+          "memberId" : {
+            "type" : "number",
+            "description" : "ID of the member who creates the category."
+          },
+          "enterpriseId" : {
+            "type" : "number",
+            "description" : "ID of the enterprise this business unit belongs to."
+          },
+          "sharingProperties" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "Stores the MIDs of business units this category is shared with and the sharing type. Only included in the response if CategoryType is asset-shared."
+          },
+          "meta" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "Meta is used much like the data attribute on CMS assets but for internal functionality in Content Builder. If meta is returned, be sure to pass it through the API."
+          }
+        },
+        "additionalProperties" : true,
+        "description" : "Represents a content category in Salesforce Marketing Cloud"
+      },
       "ContactAttributeFilterCondition" : {
         "required" : [ "filterConditionOperator", "filterConditionValue" ],
         "type" : "object",
@@ -2736,6 +3107,38 @@
         "description" : "A journey status value to use to filter the results. The ScheduledToSend, Sent, and Stopped statuses exist only in single-send journeys. If you don't specify a status value, the API returns all journeys regardless of their statuses",
         "enum" : [ "Deleted", "Draft", "Published", "ScheduledToPublish", "Stopped", "Unpublished", "ScheduledToSend", "Sent" ]
       },
+      "AssetList" : {
+        "required" : [ "count", "items", "links", "page", "pageSize" ],
+        "type" : "object",
+        "properties" : {
+          "count" : {
+            "type" : "integer",
+            "description" : "Total number of assets."
+          },
+          "page" : {
+            "type" : "integer",
+            "description" : "Current page number."
+          },
+          "pageSize" : {
+            "type" : "integer",
+            "description" : "Number of items per page."
+          },
+          "links" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "Navigation links."
+          },
+          "items" : {
+            "type" : "array",
+            "description" : "List of asset items.",
+            "items" : {
+              "$ref" : "#/components/schemas/Asset"
+            }
+          }
+        },
+        "additionalProperties" : true,
+        "description" : "Response containing a collection of content assets"
+      },
       "AttributeSetItem" : {
         "required" : [ "values" ],
         "type" : "object",
@@ -2881,6 +3284,38 @@
             "description" : "The version of the journey from which the contact was removed"
           }
         }
+      },
+      "CategoryList" : {
+        "required" : [ "count", "items", "links", "page", "pageSize" ],
+        "type" : "object",
+        "properties" : {
+          "count" : {
+            "type" : "integer",
+            "description" : "Total number of categories."
+          },
+          "page" : {
+            "type" : "integer",
+            "description" : "Current page number."
+          },
+          "pageSize" : {
+            "type" : "integer",
+            "description" : "Number of items per page."
+          },
+          "links" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "Navigation links."
+          },
+          "items" : {
+            "type" : "array",
+            "description" : "List of content categories.",
+            "items" : {
+              "$ref" : "#/components/schemas/Category"
+            }
+          }
+        },
+        "additionalProperties" : true,
+        "description" : "Response containing a collection of content categories"
       },
       "ContactExitStatusResponse" : {
         "$ref" : "#/components/schemas/ContactExitStatus"
@@ -3055,6 +3490,39 @@
             "type" : "integer"
           }
         }
+      },
+      "CreateCategory" : {
+        "required" : [ "name", "parentId" ],
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "description" : "Name of the category."
+          },
+          "parentId" : {
+            "type" : "number",
+            "description" : "ID of the parent category."
+          },
+          "categoryType" : {
+            "type" : "string",
+            "description" : "The type of category, either asset or asset-shared."
+          },
+          "memberId" : {
+            "type" : "number",
+            "description" : "ID of the member who creates the category."
+          },
+          "enterpriseId" : {
+            "type" : "number",
+            "description" : "ID of the enterprise this business unit belongs to."
+          },
+          "sharingProperties" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "Stores the MIDs of business units this category is shared with and the sharing type. Only included in the response if CategoryType is asset-shared."
+          }
+        },
+        "additionalProperties" : true,
+        "description" : "Represents a content category in Salesforce Marketing Cloud"
       },
       "ContactMembershipResponse" : {
         "type" : "object",
