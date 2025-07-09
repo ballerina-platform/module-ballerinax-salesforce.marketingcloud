@@ -588,4 +588,41 @@ public isolated client class Client {
         request.setPayload(jsonBody, "application/json");
         return self.clientEp->post(resourcePath, request, headers);
     }
+
+    # Get Email Definitions
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - List of email definitions 
+    remote isolated function getEmailDefinitions(map<string|string[]> headers = {}, *GetEmailDefinitionsQueries queries) returns EmailDefinitionList|error {
+        string resourcePath = string `/messaging/v1/email/definitions`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        return self.clientEp->get(resourcePath, headers);
+    }
+
+    # Create Email Definition
+    #
+    # + headers - Headers to be sent with the request 
+    # + payload - Payload to be sent with the request 
+    # + return - Email definition created successfully 
+    remote isolated function createEmailDefinition(CreateEmailDefinition payload, map<string|string[]> headers = {}) returns EmailDefinition|error {
+        string resourcePath = string `/messaging/v1/email/definitions`;
+        http:Request request = new;
+        json jsonBody = jsondata:toJson(payload);
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
+    # Send Email Message
+    #
+    # + headers - Headers to be sent with the request 
+    # + payload - Payload to be sent with the request 
+    # + return - Email message accepted for processing 
+    remote isolated function sendEmailMessage(SendEmailMessageRequest payload, map<string|string[]> headers = {}) returns SendEmailMessageResponse|error {
+        string resourcePath = string `/messaging/v1/email/messages`;
+        http:Request request = new;
+        json jsonBody = jsondata:toJson(payload);
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
 }

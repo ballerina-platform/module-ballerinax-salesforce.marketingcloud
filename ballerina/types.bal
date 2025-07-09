@@ -59,6 +59,20 @@ public type SearchPreferencesResponse record {
     ContactPreferenceEntity[] items;
 };
 
+# List of email definitions
+public type EmailDefinitionList record {
+    # Unique identifier for the request
+    string requestId?;
+    # Number of items returned
+    int count;
+    # Number of items per page
+    int pageSize;
+    # Current page number
+    int page;
+    # List of email definitions
+    EmailDefinitionSummary[] definitions;
+};
+
 public type Address record {
     # Type-value object specifying ContactID tied to given address
     record {} contactID?;
@@ -80,6 +94,34 @@ public type Address record {
     int status?;
     # Ordinal value of retrieved address
     int ordinal?;
+};
+
+# Represents an email definition in Salesforce Marketing Cloud
+public type EmailDefinition record {
+    # Subscribers of Email Definition
+    EmailDefinitionSubscriptions subscriptions;
+    # Date the definition was created
+    string createdDate;
+    # The unique identifier of this request
+    string requestId?;
+    # Name of the definition
+    string name;
+    # Date and time the definition was most recently changed
+    string modifiedDate;
+    # Options of Email Definitions
+    EmailDefinitionOptions options?;
+    # Unique, user-generated key to access the definition object
+    string definitionKey;
+    # User-provided description of the send definition
+    string description?;
+    # The external key of a sending classification defined in Email Studio Administration. Only transactional classifications are permitted. Default is default transactional
+    string classification?;
+    # Content of the Email Definition
+    CreateEmailDefinitionContent content;
+    # A unique object ID
+    string definitionId?;
+    # Operational state of the definition: active, inactive, or deleted. A message sent to an active definition is processed and delivered. A message sent to an inactive definition isn’t processed or delivered. Instead, the message is queued for later processing for up to three days
+    "active"|"inactive"|"deleted" status;
 };
 
 # Response containing a collection of journeys
@@ -215,6 +257,18 @@ public type ActivityOutcomes record {
     string next;
 };
 
+# Subscribers of Email Definition
+public type EmailDefinitionSubscriptions record {
+    # Adds the recipient’s email address and contact key as a subscriber key to subscriptions.list. Default is true
+    boolean autoAddSubscriber = true;
+    # The external key of the triggered send data extension. Each request inserts as a new row in the data extension
+    string dataExtension?;
+    # For email only: Updates the recipient’s contact key as a subscriber key with the provided email address and profile attributes to subscriptions.list. Default is true
+    boolean updateSubscriber = true;
+    # The external key of the list or all subscribers. Contains the subscriber keys and profile attributes
+    string list;
+};
+
 # Represents the Queries record for the operation: getCampaigns
 public type GetCampaignsQueries record {
     # The field and sort method to use to sort the results. You can sort on these fields: modifiedDate, createdDate, name, and id. You can sort these fields in ascending (ASC) or descending (DESC) order. The default value is 'modifiedDate DESC'
@@ -335,6 +389,22 @@ public type Asset record {
     record {} category;
 };
 
+# Represents the Queries record for the operation: getEmailDefinitions
+public type GetEmailDefinitionsQueries record {
+    # Filter by status type. Accepted values are active, inactive, or deleted. Valid operations are eq and neq
+    @http:Query {name: "$filter"}
+    string filter?;
+    # Sort by a dimension. You can sort by only one dimension. Accepted values are definitionKey, name, createdDate, modifiedDate, and status
+    @http:Query {name: "$orderBy"}
+    string orderBy?;
+    # The page number of results to retrieve. The default value is 1
+    @http:Query {name: "$page"}
+    int page = 1;
+    # The number of items to return on a page of results. The default and maximum value is 50
+    @http:Query {name: "$pageSize"}
+    int pageSize = 50;
+};
+
 # Provides a set of configurations for controlling the behaviours when communicating with a remote HTTP endpoint.
 @display {label: "Connection Config"}
 public type ConnectionConfig record {|
@@ -387,6 +457,15 @@ public type UpsertContactRequest record {
     string contactKey?;
     # List of attribute sets for the contact
     AttributeSet[] attributeSets;
+};
+
+public type SendEmailMessageResult record {
+    # A unique identifier for the message send attempt
+    string messageKey;
+    # Error message for this recipient, if any
+    string message?;
+    # Error code for this recipient, if any
+    int errorcode?;
 };
 
 # Represents the Queries record for the operation: getJourneyById
@@ -471,6 +550,18 @@ public type GetContactDeleteRequestsQueries record {
     int pageSize = 50;
     # Start date and time in UTC of the date range
     string startdateutc?;
+};
+
+# Response for sending an email message. Each item in 'responses' corresponds to a recipient and may include error details if the send failed
+public type SendEmailMessageResponse record {
+    # Unique identifier for the request
+    string requestId;
+    # Array of message send results, one per recipient
+    SendEmailMessageResult[] responses;
+    # Overall error message, if any
+    string message?;
+    # Error code for the overall request, if any
+    int errorcode?;
 };
 
 # Request body for searching contacts by email channel address
@@ -590,6 +681,12 @@ public type Journey record {
     Activity[] activities?;
 };
 
+# Options of Email Definitions
+public type EmailDefinitionOptions record {
+    # Wraps links for tracking and reporting. Default is true
+    boolean trackLinks = true;
+};
+
 public type ChannelAddressResponseEntities record {
     # Channel address of the email channel
     string channelAddress;
@@ -642,6 +739,16 @@ public type Category record {
     record {} meta?;
 };
 
+# Request body for sending an email message using a previously created email definition
+public type SendEmailMessageRequest record {
+    # Required. An array of recipient objects containing parameters and metadata for the recipients, such as send tracking and personalization attributes. If this object is present in the request, the recipient array (which is used to send messages to a single recipient) can't be included in the request
+    SendEmailMessagRecipients[] recipients;
+    # Required. The ID of the send definition
+    string definitionKey;
+    # Information used to personalize the message for the request. Written as key-value pairs. The attributes match profile attributes, content attributes, or triggered send data extension attributes
+    record {} attributes?;
+};
+
 public type ValidateEmailResponse record {
     # Indicates whether the email address is valid
     boolean valid?;
@@ -671,6 +778,23 @@ public type UpsertCampaign record {
     string color;
     # Indicates if the campaign is marked as a favorite.
     boolean favorite;
+};
+
+# Content of the Email Definition
+public type CreateEmailDefinitionContent record {
+    # Unique identifier of the content asset
+    string customerKey;
+};
+
+public type SendEmailMessagRecipients record {
+    # A unique identifier that you can use to track the status of the message. If not provided, the system generates one. Must be unique among all of the keys used in your business unit over the prior 72 hours. Max 100 characters
+    string messageKey?;
+    # Required. A unique identifier for the subscriber. You can create a contact key at send time if the contact isn’t already in Marketing Cloud Engagement
+    string contactKey;
+    # Personalization information for the recipient. Written as key-value pairs. The attributes match profile attributes, content attributes, or triggered send data extension attributes
+    record {} attributes?;
+    # The recipient's email address
+    string to?;
 };
 
 public type FireEventResponse record {
@@ -727,6 +851,26 @@ public type AssetList record {
     Asset[] items;
 };
 
+# Request body for creating a new email definition
+public type CreateEmailDefinition record {
+    # Subscribers of Email Definition
+    EmailDefinitionSubscriptions subscriptions;
+    # Name of the definition. Must be unique
+    string name;
+    # Options of Email Defintion
+    CreateEmailDefinitionOptions options?;
+    # Unique, user-generated key to access the definition object
+    string definitionKey;
+    # User-provided description of the send definition
+    string description?;
+    # The external key of a sending classification defined in Email Studio Administration. Only transactional classifications are permitted. Default is default transactional
+    string classification?;
+    # Content of the Email Definition
+    CreateEmailDefinitionContent content;
+    # Operational state of the definition: active, inactive, or deleted. A message sent to an active definition is processed and delivered. A message sent to an inactive definition isn’t processed or delivered. Instead, the message is queued for later processing for up to three days
+    "active"|"inactive"|"deleted" status?;
+};
+
 # Represents an item in an attribute set, containing multiple attributes
 public type AttributeSetItem record {
     # List of name/value pairs for the attributes
@@ -755,6 +899,20 @@ public type ContactExitStatus record {
     string contactKey?;
     string definitionKey?;
     ContactExitStatusDetail[] status?;
+};
+
+# Email definition object
+public type EmailDefinitionSummary record {
+    # Creation date of the email definition
+    string createdDate;
+    # Name of the email definition
+    string name;
+    # Last modification date of the email definition
+    string modifiedDate;
+    # Unique key for the email definition
+    string definitionKey;
+    # Status of the email definition
+    string status;
 };
 
 # Represents the Queries record for the operation: deleteJourneyByKey
@@ -920,6 +1078,18 @@ public type ContactDeleteResponse record {
     record {}[] resultMessages;
     # ID of the service message
     string serviceMessageID;
+};
+
+# Options of Email Defintion
+public type CreateEmailDefinitionOptions record {
+    # Include CC email addresses with every send. To CC dynamically at send time, create a profile attribute and use the %%attribute%% syntax
+    string[] cc?;
+    # Include BCC email addresses with every send. To BCC dynamically at send time, create a profile attribute and use the %%attribute%% syntax
+    string[] bcc?;
+    # Wraps links for tracking and reporting. Default is true
+    boolean trackLinks = true;
+    # A value of true updates the send definition to make it available in Journey Builder as a Transactional Send Journey. After the definition is tied to a Transactional Send Journey, the definition remains part of Journey Builder. You can’t unlink a journey from a definition without recreating the transactional send definition
+    boolean createJourney?;
 };
 
 public type ContactMembershipDetail record {
