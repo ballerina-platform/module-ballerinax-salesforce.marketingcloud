@@ -294,6 +294,54 @@ public isolated client class Client {
         return self.clientEp->post(resourcePath, request, headers);
     }
 
+    # Get Campaigns
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - List of campaigns 
+    remote isolated function getCampaigns(map<string|string[]> headers = {}, *GetCampaignsQueries queries) returns CampaignList|error {
+        string resourcePath = string `/hub/v1/campaigns/`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        return self.clientEp->get(resourcePath, headers);
+    }
+
+    # Create Campaign
+    #
+    # + headers - Headers to be sent with the request 
+    # + payload - Payload to be sent with the request 
+    # + return - Campaign created successfully 
+    remote isolated function createCampaign(UpsertCampaign payload, map<string|string[]> headers = {}) returns Campaign|error {
+        string resourcePath = string `/hub/v1/campaigns/`;
+        http:Request request = new;
+        json jsonBody = jsondata:toJson(payload);
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
+    # Delete Campaign
+    #
+    # + id - ID of the campaign to delete
+    # + headers - Headers to be sent with the request 
+    # + return - Campaign deleted successfully 
+    remote isolated function deleteCampaign(string id, map<string|string[]> headers = {}) returns error? {
+        string resourcePath = string `/hub/v1/campaigns/${getEncodedUri(id)}`;
+        return self.clientEp->delete(resourcePath, headers = headers);
+    }
+
+    # Update Campaign
+    #
+    # + id - ID of the campaign to update
+    # + headers - Headers to be sent with the request 
+    # + payload - Payload to be sent with the request 
+    # + return - Campaign updated successfully 
+    remote isolated function updateCampaign(string id, UpsertCampaign payload, map<string|string[]> headers = {}) returns Campaign|error {
+        string resourcePath = string `/hub/v1/campaigns/${getEncodedUri(id)}`;
+        http:Request request = new;
+        json jsonBody = jsondata:toJson(payload);
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->patch(resourcePath, request, headers);
+    }
+
     # Upsert Row Set - DE Key
     #
     # + dEExternalKey - External Key of the Data Extension
@@ -302,6 +350,48 @@ public isolated client class Client {
     # + return - Successful response 
     remote isolated function upsertDERowSetByKey(string dEExternalKey, DataExtensionRowSet payload, map<string|string[]> headers = {}) returns DataExtensionRowSet|error {
         string resourcePath = string `/hub/v1/dataevents/key:${getEncodedUri(dEExternalKey)}/rowset`;
+        http:Request request = new;
+        json jsonBody = jsondata:toJson(payload);
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
+    # Delete Row Set - DE Key
+    #
+    # + dEExternalKey - External Key of the Data Extension
+    # + headers - Headers to be sent with the request 
+    # + payload - Payload to be sent with the request 
+    # + return - Successful response 
+    remote isolated function deleteDERowSetByKey(string dEExternalKey, DataExtensionRowSet payload, map<string|string[]> headers = {}) returns DataExtensionRowSet|error {
+        string resourcePath = string `/hub/v1/dataevents/key:${getEncodedUri(dEExternalKey)}/rowset/delete`;
+        http:Request request = new;
+        json jsonBody = jsondata:toJson(payload);
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
+    # Upsert Row Set - DE Key (Async)
+    #
+    # + dEExternalKey - External Key of the Data Extension
+    # + headers - Headers to be sent with the request 
+    # + payload - Payload to be sent with the request 
+    # + return - Successful response 
+    remote isolated function upsertDERowSetByKeyAsync(string dEExternalKey, DataExtensionRowSet payload, map<string|string[]> headers = {}) returns error? {
+        string resourcePath = string `/hub/v1/dataeventsasync/key:${getEncodedUri(dEExternalKey)}/rowset`;
+        http:Request request = new;
+        json jsonBody = jsondata:toJson(payload);
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
+    # Delete Row Set - DE Key (Async)
+    #
+    # + dEExternalKey - External Key of the Data Extension
+    # + headers - Headers to be sent with the request 
+    # + payload - Payload to be sent with the request 
+    # + return - Successful response 
+    remote isolated function deleteDERowSetByKeyAsync(string dEExternalKey, DataExtensionRowSet payload, map<string|string[]> headers = {}) returns error? {
+        string resourcePath = string `/hub/v1/dataeventsasync/key:${getEncodedUri(dEExternalKey)}/rowset/delete`;
         http:Request request = new;
         json jsonBody = jsondata:toJson(payload);
         request.setPayload(jsonBody, "application/json");

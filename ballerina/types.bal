@@ -197,6 +197,19 @@ public type ActivityOutcomes record {
     string next;
 };
 
+# Represents the Queries record for the operation: getCampaigns
+public type GetCampaignsQueries record {
+    # The field and sort method to use to sort the results. You can sort on these fields: modifiedDate, createdDate, name, and id. You can sort these fields in ascending (ASC) or descending (DESC) order. The default value is 'modifiedDate DESC'
+    @http:Query {name: "$orderBy"}
+    string orderBy?;
+    # The page number of results to retrieve. The default value is 1
+    @http:Query {name: "$page"}
+    int page = 1;
+    # The number of items to return on a page of results. The default and maximum value is 50
+    @http:Query {name: "$pageSize"}
+    int pageSize = 50;
+};
+
 public type FireEvent record {
     # Key of the entry event defined in Journey Builder
     @jsondata:Name {value: "EventDefinitionKey"}
@@ -437,6 +450,26 @@ public type Defaults record {|
     string[]...;
 |};
 
+# Represents a campaign in Salesforce Marketing Cloud
+public type Campaign record {
+    # The date and time the campaign was created.
+    string createdDate;
+    # The date and time the campaign was last modified.
+    string modifiedDate;
+    # The unique identifier for the campaign.
+    string id;
+    # The name of the campaign.
+    string name;
+    # A description of the campaign.
+    string description;
+    # A code used to identify the campaign.
+    string campaignCode;
+    # A color code associated with the campaign.
+    string color;
+    # Indicates if the campaign is marked as a favorite.
+    boolean favorite;
+};
+
 # Retrieved contact preferences by contact key
 public type ContactPreferencesResponse record {
     # Date and time of the retry response in UTC
@@ -568,7 +601,19 @@ public type ContactAttributeFilterCondition record {
     string filterConditionValue;
 };
 
-public type SearchPreferencesRequestItems ItemsOneOf1|ItemsItemsOneOf12;
+# Represents a campaign in Salesforce Marketing Cloud
+public type UpsertCampaign record {
+    # The name of the campaign.
+    string name;
+    # A description of the campaign.
+    string description;
+    # A code used to identify the campaign.
+    string campaignCode;
+    # A color code associated with the campaign.
+    string color;
+    # Indicates if the campaign is marked as a favorite.
+    boolean favorite;
+};
 
 public type FireEventResponse record {
     # Unique ID for the fired event instance
@@ -625,8 +670,6 @@ public type ContactPreferencesRequest record {
     # Array of contact IDs and other properties to add
     ContactPreferenceEntity[] items;
 };
-
-public type ItemsOneOf1 string;
 
 # Represents a name/value pair for an attribute
 public type AttributeSetValue record {
@@ -730,10 +773,8 @@ public type EventDefinitionSchedule record {
 # Request to search contact preferences
 public type SearchPreferencesRequest record {
     # Array of contact keys or IDs to search for preferences
-    SearchPreferencesRequestItems[] items;
+    (string|int)[] items;
 };
-
-public type ItemsItemsOneOf12 int;
 
 public type ContactDeleteResponse record {
     # Indicates if the operation was initiated successfully
@@ -760,6 +801,19 @@ public type ContactMembershipDetail record {
 
 public type ContactMembershipResponse record {
     ContactMembership results?;
+};
+
+public type CampaignList record {
+    # Total number of campaigns.
+    int count;
+    # Current page number.
+    int page;
+    # Number of items per page.
+    int pageSize;
+    # Navigation links.
+    record {} links;
+    # List of campaign items.
+    Campaign[] items;
 };
 
 public type ContactDeleteRequest record {
