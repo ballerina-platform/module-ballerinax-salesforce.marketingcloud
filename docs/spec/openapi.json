@@ -1872,6 +1872,99 @@
           }
         }
       }
+    },
+    "/data/v1/async/import" : {
+      "post" : {
+        "tags" : [ "Messaging & Journeys > REST > Data" ],
+        "summary" : "Import Data Extension File (Async)",
+        "description" : "Imports data from a file into a data extension asynchronously. The file must be accessible by the system (e.g., via pre-signed URL).",
+        "operationId" : "importDataExtensionAsync",
+        "requestBody" : {
+          "description" : "Payload containing import details such as file location and data extension key",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ImportRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Import request accepted for processing",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ImportResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/data/v1/async/import/{id}/summary" : {
+      "get" : {
+        "tags" : [ "Messaging & Journeys > REST > Data" ],
+        "summary" : "Get Data Extension Import Summary",
+        "description" : "Retrieves the summary of a data extension import operation by its ID.",
+        "operationId" : "getImportSummary",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "The unique identifier for the import operation",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Import summary retrieved successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ImportSummaryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/data/v1/bulk/ingest" : {
+      "post" : {
+        "tags" : [ "Messaging & Journeys > REST > Data" ],
+        "summary" : "Bulk Ingest Data Extension Rows",
+        "description" : "Ingests a large set of data extension rows in bulk. This operation is optimized for high-volume data loads.",
+        "operationId" : "createBulkIngestJob",
+        "requestBody" : {
+          "description" : "Payload to be sent with request",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateBulkIngestJob"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Bulk ingest request accepted and processed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CreateBulkIngestJobResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -2371,7 +2464,6 @@
       },
       "EmailDefinitionSubscriptions" : {
         "required" : [ "list" ],
-        "description": "Subscribers of Email Definition",
         "type" : "object",
         "properties" : {
           "autoAddSubscriber" : {
@@ -2392,7 +2484,8 @@
             "type" : "string",
             "description" : "The external key of the list or all subscribers. Contains the subscriber keys and profile attributes"
           }
-        }
+        },
+        "description" : "Subscribers of Email Definition"
       },
       "FireEvent" : {
         "required" : [ "ContactKey", "EventDefinitionKey" ],
@@ -2521,6 +2614,33 @@
               "type" : "object"
             }
           }
+        }
+      },
+      "ImportResponse" : {
+        "required" : [ "id", "requestId", "resultMessages" ],
+        "type" : "object",
+        "properties" : {
+          "requestId" : {
+            "type" : "string",
+            "description" : "Unique identifier for the request"
+          },
+          "id" : {
+            "type" : "integer",
+            "description" : "Unique identifier for the import operation"
+          },
+          "resultMessages" : {
+            "type" : "array",
+            "description" : "Array of messages about the import request",
+            "items" : {
+              "type" : "object"
+            }
+          }
+        },
+        "description" : "Response for importing a data extension file asynchronously",
+        "example" : {
+          "id" : 51593,
+          "requestId" : "cb42eea2-f986-4d2f-bed6-87f3dfcc9058",
+          "resultMessages" : [ ]
         }
       },
       "SearchContactsByEmailResponse" : {
@@ -3122,16 +3242,47 @@
           "workflowApiVersion" : 1
         }
       },
+      "CreateBulkIngestJob" : {
+        "required" : [ "destinationCustomerKey", "updateType" ],
+        "type" : "object",
+        "properties" : {
+          "jobStatus" : {
+            "type" : "string",
+            "description" : "Job status (New, Staging, Queued, Processing, Complete, Error)",
+            "example" : "New",
+            "enum" : [ "New", "Staging", "Queued", "Processing", "Complete", "Error" ]
+          },
+          "destinationCustomerKey" : {
+            "maxLength" : 36,
+            "type" : "string",
+            "description" : "Data extension customer key (required)",
+            "example" : "Faker_DE"
+          },
+          "updateType" : {
+            "type" : "string",
+            "description" : "Supported data operation types (required)",
+            "example" : "Overwrite",
+            "enum" : [ "AddAndUpdate", "AddAndDoNotUpdate", "UpdateButDoNotAdd", "Overwrite" ]
+          },
+          "jobExpirationHours" : {
+            "maximum" : 8,
+            "type" : "integer",
+            "description" : "Can specify a value up to 8 hours - this value drives the time allocated to stage data before starting a job. Note: For larger staging time (over 8 hours), contact support",
+            "example" : 8
+          }
+        },
+        "description" : "Definition for a bulk ingest job targeting a data extension"
+      },
       "EmailDefinitionOptions" : {
         "type" : "object",
-        "description": "Options of Email Definitions",
         "properties" : {
           "trackLinks" : {
             "type" : "boolean",
             "description" : "Wraps links for tracking and reporting. Default is true",
             "default" : true
           }
-        }
+        },
+        "description" : "Options of Email Definitions"
       },
       "UpsertContactResponse" : {
         "required" : [ "contactID", "contactKey", "hasErrors", "isNewContactKey", "operationStatus", "responseDateTime", "rowsAffected" ],
@@ -3203,6 +3354,46 @@
               "$ref" : "#/components/schemas/ContactKeyEntities"
             }
           }
+        }
+      },
+      "ImportSummaryResponse" : {
+        "required" : [ "requestId", "resultMessages", "summary" ],
+        "type" : "object",
+        "properties" : {
+          "summary" : {
+            "$ref" : "#/components/schemas/ImportSummary"
+          },
+          "requestId" : {
+            "type" : "string",
+            "description" : "Unique identifier for the request"
+          },
+          "resultMessages" : {
+            "type" : "array",
+            "description" : "Array of messages about the import summary",
+            "items" : {
+              "type" : "object"
+            }
+          }
+        },
+        "description" : "Response containing the summary of a data extension import operation",
+        "example" : {
+          "summary" : {
+            "duplicateRows" : 0,
+            "restrictedRows" : 0,
+            "endDate" : "10/16/2023 10:22:26 AM",
+            "errors" : 0,
+            "id" : 15445111,
+            "importStatus" : "Success",
+            "importId" : "ac247ef5-b6c8-4ab1-b1d0-69f6a63ce33a",
+            "startDate" : "10/16/2023 10:22:24 AM",
+            "successfulRows" : 0,
+            "targetId" : "48D72A0D-B436-EE11-813D-1402EC6B95BC",
+            "targetKey" : "",
+            "targetUpdateType" : "Data Extension",
+            "totalRows" : 1
+          },
+          "requestId" : "a7d17c4d-ab9e-400e-929b-bb4c7a362992",
+          "resultMessages" : [ ]
         }
       },
       "SendEmailMessageRequest" : {
@@ -3307,6 +3498,65 @@
           "failedValidation" : "ListDetectiveValidator"
         }
       },
+      "ImportSummary" : {
+        "required" : [ "duplicateRows", "endDate", "errors", "id", "importId", "importStatus", "restrictedRows", "startDate", "successfulRows", "targetId", "targetKey", "targetUpdateType", "totalRows" ],
+        "type" : "object",
+        "properties" : {
+          "importStatus" : {
+            "type" : "string",
+            "description" : "Status of the import operation"
+          },
+          "targetId" : {
+            "type" : "string",
+            "description" : "Target object ID for the import"
+          },
+          "endDate" : {
+            "type" : "string",
+            "description" : "End date and time of the import operation"
+          },
+          "restrictedRows" : {
+            "type" : "integer",
+            "description" : "Number of restricted rows found in the import"
+          },
+          "targetUpdateType" : {
+            "type" : "string",
+            "description" : "Type of update performed on the target"
+          },
+          "totalRows" : {
+            "type" : "integer",
+            "description" : "Total number of rows processed in the import"
+          },
+          "targetKey" : {
+            "type" : "string",
+            "description" : "Target object key for the import"
+          },
+          "successfulRows" : {
+            "type" : "integer",
+            "description" : "Number of rows successfully imported"
+          },
+          "importId" : {
+            "type" : "string",
+            "description" : "Unique identifier for the import operation"
+          },
+          "duplicateRows" : {
+            "type" : "integer",
+            "description" : "Number of duplicate rows found in the import"
+          },
+          "id" : {
+            "type" : "integer",
+            "description" : "Unique identifier for the import summary"
+          },
+          "errors" : {
+            "type" : "integer",
+            "description" : "Number of errors encountered during the import"
+          },
+          "startDate" : {
+            "type" : "string",
+            "description" : "Start date and time of the import operation"
+          }
+        },
+        "description" : "Summary of queued data import"
+      },
       "UpsertCampaign" : {
         "required" : [ "campaignCode", "color", "description", "favorite", "name" ],
         "type" : "object",
@@ -3338,13 +3588,13 @@
       "CreateEmailDefinitionContent" : {
         "required" : [ "customerKey" ],
         "type" : "object",
-        "description": "Content of the Email Definition",
         "properties" : {
           "customerKey" : {
             "type" : "string",
             "description" : "Unique identifier of the content asset"
           }
-        }
+        },
+        "description" : "Content of the Email Definition"
       },
       "SendEmailMessagRecipients" : {
         "required" : [ "contactKey" ],
@@ -3612,6 +3862,73 @@
         },
         "description" : "Represents a name/value pair for an attribute"
       },
+      "ImportRequest" : {
+        "required" : [ "allowErrors", "contentType", "fieldMappingType", "hasMultipleFiles", "key", "specifier", "type", "updateType" ],
+        "type" : "object",
+        "properties" : {
+          "specifier" : {
+            "type" : "string",
+            "description" : "Name of the source file (compressed or uncompressed). In case of multiple files, specify the folder name",
+            "example" : "sample.csv"
+          },
+          "allowErrors" : {
+            "type" : "boolean",
+            "description" : "Indicates if the import should continue past row level errors. Defaults to true",
+            "example" : true
+          },
+          "standardQuotedStrings" : {
+            "type" : "string",
+            "description" : "Indicates if the import respects double quotes (\") as a text delimiter",
+            "example" : "true"
+          },
+          "hasMultipleFiles" : {
+            "type" : "string",
+            "description" : "Indicates if the specifier has more than one file to import. Defaults to false",
+            "example" : "false"
+          },
+          "controlColumnDefaultAction" : {
+            "type" : "string",
+            "description" : "Default action against a row if no explicit action code is specified",
+            "example" : "Delete"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "The type of the object being imported into. The only supported value is DataExtension",
+            "example" : "DataExtension"
+          },
+          "contentType" : {
+            "type" : "string",
+            "description" : "Indicates how the content is delimited",
+            "example" : "CSV"
+          },
+          "controlColumn" : {
+            "type" : "string",
+            "description" : "Column name in the source file that controls row-level action. For example, add, delete, update and so on",
+            "example" : "Action_Column"
+          },
+          "key" : {
+            "type" : "string",
+            "description" : "The unique (customerKey) reference of the data extension",
+            "example" : "DE_Customer_Key"
+          },
+          "updateType" : {
+            "type" : "string",
+            "description" : "The type of import operation to perform against the destination data extension",
+            "example" : "Overwrite"
+          },
+          "fieldMappingType" : {
+            "type" : "string",
+            "description" : "Indicates the type of field mapping",
+            "example" : "InferFromColumnHeadings"
+          },
+          "transportKey" : {
+            "type" : "string",
+            "description" : "The external key of an active file transfer location",
+            "example" : "AWS_FTL"
+          }
+        },
+        "description" : "Request body for importing a data extension file. Inherits properties from fileInfo, target, mapping, and transport"
+      },
       "ContactExitStatus" : {
         "type" : "object",
         "properties" : {
@@ -3739,6 +4056,28 @@
       },
       "ContactExitStatusResponse" : {
         "$ref" : "#/components/schemas/ContactExitStatus"
+      },
+      "CreateBulkIngestJobResponse" : {
+        "required" : [ "bulkApiDefinitionId", "requestId", "resultMessages" ],
+        "type" : "object",
+        "properties" : {
+          "requestId" : {
+            "type" : "string",
+            "description" : "Request ID for tracking the operation"
+          },
+          "bulkApiDefinitionId" : {
+            "type" : "string",
+            "description" : "Unique identifier for the bulk API definition"
+          },
+          "resultMessages" : {
+            "type" : "array",
+            "description" : "Array of messages about the bulk ingest job",
+            "items" : {
+              "type" : "object"
+            }
+          }
+        },
+        "description" : "Response for creating a bulk ingest job targeting a data extension"
       },
       "AttributeSet" : {
         "required" : [ "items", "name" ],
@@ -3899,7 +4238,6 @@
       },
       "CreateEmailDefinitionOptions" : {
         "type" : "object",
-        "description": "Options of Email Defintion",
         "properties" : {
           "cc" : {
             "type" : "array",
@@ -3924,7 +4262,8 @@
             "type" : "boolean",
             "description" : "A value of true updates the send definition to make it available in Journey Builder as a Transactional Send Journey. After the definition is tied to a Transactional Send Journey, the definition remains part of Journey Builder. You can’t unlink a journey from a definition without recreating the transactional send definition"
           }
-        }
+        },
+        "description" : "Options of Email Defintion"
       },
       "ContactMembershipDetail" : {
         "type" : "object",
