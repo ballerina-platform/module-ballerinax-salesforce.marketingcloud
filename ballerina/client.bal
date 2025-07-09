@@ -284,6 +284,7 @@ public isolated client class Client {
     # Validate Address
     #
     # + headers - Headers to be sent with the request 
+    # + payload - Payload to be sent with the request 
     # + return - Successful response 
     remote isolated function validateEmail(ValidateEmailRequest payload, map<string|string[]> headers = {}) returns ValidateEmailResponse|error {
         string resourcePath = string `/address/v1/validateEmail`;
@@ -295,10 +296,129 @@ public isolated client class Client {
 
     # Upsert Row Set - DE Key
     #
+    # + dEExternalKey - External Key of the Data Extension
     # + headers - Headers to be sent with the request 
+    # + payload - Payload to be sent with the request 
     # + return - Successful response 
     remote isolated function upsertDERowSetByKey(string dEExternalKey, DataExtensionRowSet payload, map<string|string[]> headers = {}) returns DataExtensionRowSet|error {
         string resourcePath = string `/hub/v1/dataevents/key:${getEncodedUri(dEExternalKey)}/rowset`;
+        http:Request request = new;
+        json jsonBody = jsondata:toJson(payload);
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
+    # Search Contacts by Attribute
+    #
+    # + attributeName - The name of the attribute to search by
+    # + headers - Headers to be sent with the request 
+    # + payload - Payload to be sent with the request 
+    # + return - OK 
+    remote isolated function searchContactsByAttribute(ContactAttributeName attributeName, ContactAttributeFilterCondition payload, map<string|string[]> headers = {}) returns SearchContactsByAttributeResponse|error {
+        string resourcePath = string `/contacts/v1/addresses/search/${getEncodedUri(attributeName)}`;
+        http:Request request = new;
+        json jsonBody = jsondata:toJson(payload);
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
+    # Search Contacts by Email
+    #
+    # + headers - Headers to be sent with the request 
+    # + payload - Payload to be sent with the request 
+    # + return - OK 
+    remote isolated function searchContactsByEmail(SearchContactsByEmailRequest payload, map<string|string[]> headers = {}) returns SearchContactsByEmailResponse|error {
+        string resourcePath = string `/contacts/v1/addresses/email/search`;
+        http:Request request = new;
+        json jsonBody = jsondata:toJson(payload);
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
+    # Create Contacts
+    #
+    # + headers - Headers to be sent with the request 
+    # + payload - Payload to be sent with the request 
+    # + return - Successful response 
+    remote isolated function createContact(UpsertContactRequest payload, map<string|string[]> headers = {}) returns UpsertContactResponse|error {
+        string resourcePath = string `/contacts/v1/contacts`;
+        http:Request request = new;
+        json jsonBody = jsondata:toJson(payload);
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
+    # Update Contacts
+    #
+    # + headers - Headers to be sent with the request 
+    # + payload - Payload to be sent with the request 
+    # + return - Successful response 
+    remote isolated function updateContact(UpsertContactRequest payload, map<string|string[]> headers = {}) returns UpsertContactResponse|error {
+        string resourcePath = string `/contacts/v1/contacts`;
+        http:Request request = new;
+        json jsonBody = jsondata:toJson(payload);
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->patch(resourcePath, request, headers);
+    }
+
+    # Delete Contact - By Key
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + payload - Payload to be sent with the request 
+    # + return - Successful response 
+    remote isolated function deleteContact(ContactDeleteRequest payload, map<string|string[]> headers = {}, *DeleteContactQueries queries) returns ContactDeleteResponse|error {
+        string resourcePath = string `/contacts/v1/contacts/actions/delete`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        http:Request request = new;
+        json jsonBody = jsondata:toJson(payload);
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
+    # Get Contact Delete Request Details
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - Successful response 
+    remote isolated function getContactDeleteRequests(map<string|string[]> headers = {}, *GetContactDeleteRequestsQueries queries) returns ContactDeleteRequestsResponse|error {
+        string resourcePath = string `/contacts/v1/contacts/analytics/deleterequests`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        return self.clientEp->get(resourcePath, headers);
+    }
+
+    # Get Contact Preferences
+    #
+    # + contactKey - The contact key of the contact whose preferences are to be retrieved
+    # + headers - Headers to be sent with the request 
+    # + return - Successful response 
+    remote isolated function getContactPreferencesByKey(string contactKey, map<string|string[]> headers = {}) returns ContactPreferencesResponse|error {
+        string resourcePath = string `/contacts/v1/contacts/key:${getEncodedUri(contactKey)}/preferences`;
+        return self.clientEp->get(resourcePath, headers);
+    }
+
+    # Upsert Contact Preferences
+    #
+    # + headers - Headers to be sent with the request 
+    # + payload - Payload to be sent with the request 
+    # + return - Successful response 
+    remote isolated function upsertContactPreferences(ContactPreferencesRequest payload, map<string|string[]> headers = {}) returns UpsertContactPreferencesResponse|error {
+        string resourcePath = string `/contacts/v1/contacts/preferences`;
+        http:Request request = new;
+        json jsonBody = jsondata:toJson(payload);
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
+    # Search Contact Preferences
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + payload - Payload to be sent with the request 
+    # + return - Successful response 
+    remote isolated function searchContactPreferences(SearchPreferencesRequest payload, map<string|string[]> headers = {}, *SearchContactPreferencesQueries queries) returns SearchPreferencesResponse|error {
+        string resourcePath = string `/contacts/v1/contacts/preferences/search`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
         http:Request request = new;
         json jsonBody = jsondata:toJson(payload);
         request.setPayload(jsonBody, "application/json");
