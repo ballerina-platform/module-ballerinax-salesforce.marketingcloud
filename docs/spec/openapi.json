@@ -893,6 +893,135 @@
         }
       }
     },
+    "/hub/v1/campaigns/" : {
+      "get" : {
+        "tags" : [ "Messaging & Journeys > REST > Data Events" ],
+        "summary" : "Get Campaigns",
+        "description" : "Retrieves a collection of campaigns.",
+        "operationId" : "getCampaigns",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/page"
+        }, {
+          "$ref" : "#/components/parameters/pageSize"
+        }, {
+          "name" : "$orderBy",
+          "in" : "query",
+          "description" : "The field and sort method to use to sort the results. You can sort on these fields: modifiedDate, createdDate, name, and id. You can sort these fields in ascending (ASC) or descending (DESC) order. The default value is 'modifiedDate DESC'",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "x-ballerina-name" : "orderBy"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of campaigns",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CampaignList"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Messaging & Journeys > REST > Data Events" ],
+        "summary" : "Create Campaign",
+        "description" : "Creates a new campaign with the specified information.",
+        "operationId" : "createCampaign",
+        "requestBody" : {
+          "description" : "Payload to be sent with the request",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpsertCampaign"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Campaign created successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Campaign"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hub/v1/campaigns/{id}" : {
+      "delete" : {
+        "tags" : [ "Messaging & Journeys > REST > Data Events" ],
+        "summary" : "Delete Campaign",
+        "description" : "Deletes an individual campaign by ID.",
+        "operationId" : "deleteCampaign",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "ID of the campaign to delete",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Campaign deleted successfully"
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "Messaging & Journeys > REST > Data Events" ],
+        "summary" : "Update Campaign",
+        "description" : "Updates an existing campaign with the specified information.",
+        "operationId" : "updateCampaign",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "ID of the campaign to update",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Payload to be sent with the request",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpsertCampaign"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Campaign updated successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Campaign"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/hub/v1/dataevents/key:{dEExternalKey}/rowset" : {
       "post" : {
         "tags" : [ "Messaging & Journeys > REST > Data Events > Synchronous" ],
@@ -930,6 +1059,115 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/hub/v1/dataevents/key:{dEExternalKey}/rowset/delete" : {
+      "post" : {
+        "tags" : [ "Messaging & Journeys > REST > Data Events > Synchronous" ],
+        "summary" : "Delete Row Set - DE Key",
+        "description" : "Deletes multiple data extension rows in a single synchronous call using Data Extension's External Key.",
+        "operationId" : "deleteDERowSetByKey",
+        "parameters" : [ {
+          "name" : "dEExternalKey",
+          "in" : "path",
+          "description" : "External Key of the Data Extension",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Payload to be sent with the request",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DataExtensionRowSet"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DataExtensionRowSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hub/v1/dataeventsasync/key:{dEExternalKey}/rowset" : {
+      "post" : {
+        "tags" : [ "Messaging & Journeys > REST > Data Events > Async" ],
+        "summary" : "Upsert Row Set - DE Key (Async)",
+        "description" : "The API upserts multiple data extension rows in a single asynchronous call using Data Extension's External Key.",
+        "operationId" : "upsertDERowSetByKeyAsync",
+        "parameters" : [ {
+          "name" : "dEExternalKey",
+          "in" : "path",
+          "description" : "External Key of the Data Extension",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Payload to be sent with the request",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DataExtensionRowSet"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful response"
+          }
+        }
+      }
+    },
+    "/hub/v1/dataeventsasync/key:{dEExternalKey}/rowset/delete" : {
+      "post" : {
+        "tags" : [ "Messaging & Journeys > REST > Data Events > Async" ],
+        "summary" : "Delete Row Set - DE Key (Async)",
+        "description" : "Deletes multiple data extension rows in a single asynchronous call using Data Extension's External Key.",
+        "operationId" : "deleteDERowSetByKeyAsync",
+        "parameters" : [ {
+          "name" : "dEExternalKey",
+          "in" : "path",
+          "description" : "External Key of the Data Extension",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Payload to be sent with the request",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DataExtensionRowSet"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful response"
           }
         }
       }
@@ -1611,7 +1849,6 @@
         "description" : "Represents an event definition in Journey Builder. An event definition is a reusable component that defines how an event is triggered and processed within a journey"
       },
       "ContactPreferenceEntity" : {
-        "description": "Represents a contact preference entity",
         "required" : [ "contactID" ],
         "type" : "object",
         "properties" : {
@@ -1623,7 +1860,8 @@
             "type" : "integer",
             "description" : "Unique ID for the contact"
           }
-        }
+        },
+        "description" : "Represents a contact preference entity"
       },
       "ActivityOutcomes" : {
         "required" : [ "key", "next" ],
@@ -2021,6 +2259,48 @@
         },
         "description" : "Request body for searching contacts by email channel address"
       },
+      "Campaign" : {
+        "required" : [ "campaignCode", "color", "createdDate", "description", "favorite", "id", "modifiedDate", "name" ],
+        "type" : "object",
+        "properties" : {
+          "createdDate" : {
+            "type" : "string",
+            "description" : "The date and time the campaign was created.",
+            "format" : "date-time"
+          },
+          "modifiedDate" : {
+            "type" : "string",
+            "description" : "The date and time the campaign was last modified.",
+            "format" : "date-time"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "The unique identifier for the campaign."
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "The name of the campaign."
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "A description of the campaign."
+          },
+          "campaignCode" : {
+            "type" : "string",
+            "description" : "A code used to identify the campaign."
+          },
+          "color" : {
+            "type" : "string",
+            "description" : "A color code associated with the campaign."
+          },
+          "favorite" : {
+            "type" : "boolean",
+            "description" : "Indicates if the campaign is marked as a favorite."
+          }
+        },
+        "additionalProperties" : true,
+        "description" : "Represents a campaign in Salesforce Marketing Cloud"
+      },
       "Defaults" : {
         "type" : "object",
         "properties" : {
@@ -2336,12 +2616,33 @@
           "failedValidation" : "ListDetectiveValidator"
         }
       },
-      "SearchPreferencesRequestItems" : {
-        "oneOf" : [ {
-          "$ref" : "#/components/schemas/ItemsOneOf1"
-        }, {
-          "$ref" : "#/components/schemas/ItemsItemsOneOf12"
-        } ]
+      "UpsertCampaign" : {
+        "required" : [ "campaignCode", "color", "description", "favorite", "name" ],
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "description" : "The name of the campaign."
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "A description of the campaign."
+          },
+          "campaignCode" : {
+            "type" : "string",
+            "description" : "A code used to identify the campaign."
+          },
+          "color" : {
+            "type" : "string",
+            "description" : "A color code associated with the campaign."
+          },
+          "favorite" : {
+            "type" : "boolean",
+            "description" : "Indicates if the campaign is marked as a favorite."
+          }
+        },
+        "additionalProperties" : true,
+        "description" : "Represents a campaign in Salesforce Marketing Cloud"
       },
       "FireEventResponse" : {
         "type" : "object",
@@ -2493,9 +2794,6 @@
           }
         },
         "additionalProperties" : true
-      },
-      "ItemsOneOf1" : {
-        "type" : "string"
       },
       "AttributeSetValue" : {
         "required" : [ "name", "value" ],
@@ -2695,14 +2993,15 @@
             "type" : "array",
             "description" : "Array of contact keys or IDs to search for preferences",
             "items" : {
-              "$ref" : "#/components/schemas/SearchPreferencesRequestItems"
+              "oneOf" : [ {
+                "type" : "string"
+              }, {
+                "type" : "integer"
+              } ]
             }
           }
         },
         "description" : "Request to search contact preferences"
-      },
-      "ItemsItemsOneOf12" : {
-        "type" : "integer"
       },
       "ContactDeleteResponse" : {
         "required" : [ "hasErrors", "operationID", "operationInitiated", "requestServiceMessageID", "responseDateTime", "resultMessages", "serviceMessageID" ],
@@ -2764,6 +3063,37 @@
             "$ref" : "#/components/schemas/ContactMembership"
           }
         }
+      },
+      "CampaignList" : {
+        "required" : [ "count", "items", "links", "page", "pageSize" ],
+        "type" : "object",
+        "properties" : {
+          "count" : {
+            "type" : "integer",
+            "description" : "Total number of campaigns."
+          },
+          "page" : {
+            "type" : "integer",
+            "description" : "Current page number."
+          },
+          "pageSize" : {
+            "type" : "integer",
+            "description" : "Number of items per page."
+          },
+          "links" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "Navigation links."
+          },
+          "items" : {
+            "type" : "array",
+            "description" : "List of campaign items.",
+            "items" : {
+              "$ref" : "#/components/schemas/Campaign"
+            }
+          }
+        },
+        "additionalProperties" : true
       },
       "ContactDeleteRequest" : {
         "required" : [ "DeleteOperationType", "values" ],
