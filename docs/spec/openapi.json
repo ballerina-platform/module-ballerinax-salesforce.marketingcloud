@@ -870,6 +870,7 @@
         "description" : "Validates an email by specifying the email address and validators to be used in the request body of the HTTP POST. You can use more than one validator in the same call.",
         "operationId" : "validateEmail",
         "requestBody" : {
+          "description" : "Payload to be sent with the request",
           "content" : {
             "application/json" : {
               "schema" : {
@@ -901,6 +902,7 @@
         "parameters" : [ {
           "name" : "dEExternalKey",
           "in" : "path",
+          "description" : "External Key of the Data Extension",
           "required" : true,
           "style" : "simple",
           "explode" : false,
@@ -909,6 +911,7 @@
           }
         } ],
         "requestBody" : {
+          "description" : "Payload to be sent with the request",
           "content" : {
             "application/json" : {
               "schema" : {
@@ -930,6 +933,352 @@
           }
         }
       }
+    },
+    "/contacts/v1/addresses/search/{attributeName}" : {
+      "post" : {
+        "tags" : [ "Messaging & Journeys > REST > Contacts" ],
+        "summary" : "Search Contacts by Attribute",
+        "description" : "Searches for contacts based on a specific attribute. The attribute name is provided in the path parameter.",
+        "operationId" : "searchContactsByAttribute",
+        "parameters" : [ {
+          "name" : "attributeName",
+          "in" : "path",
+          "description" : "The name of the attribute to search by",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/ContactAttributeName"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Payload to be sent with the request",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ContactAttributeFilterCondition"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SearchContactsByAttributeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts/v1/addresses/email/search" : {
+      "post" : {
+        "tags" : [ "Messaging & Journeys > REST > Contacts" ],
+        "summary" : "Search Contacts by Email",
+        "description" : "Searches for contacts based on an email address.",
+        "operationId" : "searchContactsByEmail",
+        "requestBody" : {
+          "description" : "Payload to be sent with the request",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SearchContactsByEmailRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SearchContactsByEmailResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts/v1/contacts" : {
+      "post" : {
+        "tags" : [ "Messaging & Journeys > REST > Contacts" ],
+        "summary" : "Create Contacts",
+        "description" : "Creates a new contact with the specified information in the specified attribute groups.",
+        "operationId" : "createContact",
+        "requestBody" : {
+          "description" : "Payload to be sent with the request",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpsertContactRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UpsertContactResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "Messaging & Journeys > REST > Contacts" ],
+        "summary" : "Update Contacts",
+        "description" : "Updates contacts with the specified information in the specified attribute groups.",
+        "operationId" : "updateContact",
+        "requestBody" : {
+          "description" : "Payload to be sent with the request",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpsertContactRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UpsertContactResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts/v1/contacts/actions/delete" : {
+      "post" : {
+        "tags" : [ "Messaging & Journeys > REST > Contacts" ],
+        "summary" : "Delete Contact - By Key",
+        "description" : "Deletes contacts based on specified contact key values. This operation runs asynchronously. Use the OperationID value returned to check the status of the delete.",
+        "operationId" : "deleteContact",
+        "parameters" : [ {
+          "name" : "type",
+          "in" : "query",
+          "description" : "Type of contact to delete. Possible values are: ids, keys. If not specified, defaults to 'ids'",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "ids", "keys" ]
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Payload to be sent with the request",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ContactDeleteRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ContactDeleteResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts/v1/contacts/analytics/deleterequests" : {
+      "get" : {
+        "tags" : [ "Messaging & Journeys > REST > Contacts" ],
+        "summary" : "Get Contact Delete Request Details",
+        "description" : "Retrieves details of contact delete requests for a date range.",
+        "operationId" : "getContactDeleteRequests",
+        "parameters" : [ {
+          "name" : "startdateutc",
+          "in" : "query",
+          "description" : "Start date and time in UTC of the date range",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "enddateutc",
+          "in" : "query",
+          "description" : "End date and time in UTC of the date range",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "statusid",
+          "in" : "query",
+          "description" : "Delete request status ID. Use it to filter delete requests by status. Valid values are 1 - Processing, 5 - Completed, and 7 - Invalid",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer",
+            "enum" : [ 1, 5, 7 ]
+          }
+        }, {
+          "$ref" : "#/components/parameters/pageSize"
+        }, {
+          "$ref" : "#/components/parameters/page"
+        }, {
+          "name" : "$orderBy",
+          "in" : "query",
+          "description" : "Determines which property to use for sorting and the direction in which to sort the data",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "x-ballerina-name" : "orderBy"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ContactDeleteRequestsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts/v1/contacts/key:{contactKey}/preferences" : {
+      "get" : {
+        "tags" : [ "Messaging & Journeys > REST > Contacts" ],
+        "summary" : "Get Contact Preferences",
+        "description" : "Retrieves the preferences of a contact by their contact key.",
+        "operationId" : "getContactPreferencesByKey",
+        "parameters" : [ {
+          "name" : "contactKey",
+          "in" : "path",
+          "description" : "The contact key of the contact whose preferences are to be retrieved",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ContactPreferencesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts/v1/contacts/preferences" : {
+      "post" : {
+        "tags" : [ "Messaging & Journeys > REST > Contacts" ],
+        "summary" : "Upsert Contact Preferences",
+        "description" : "Upsert the preferences of a contact by their contact key.",
+        "operationId" : "upsertContactPreferences",
+        "requestBody" : {
+          "description" : "Payload to be sent with the request",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ContactPreferencesRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UpsertContactPreferencesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts/v1/contacts/preferences/search" : {
+      "post" : {
+        "tags" : [ "Messaging & Journeys > REST > Contacts" ],
+        "summary" : "Search Contact Preferences",
+        "description" : "Searches for contact preferences based on specified criteria.",
+        "operationId" : "searchContactPreferences",
+        "parameters" : [ {
+          "name" : "ReferenceType",
+          "in" : "query",
+          "description" : "For contact key, use 1. For contact ID, use 2",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer",
+            "enum" : [ 1, 2 ]
+          },
+          "x-ballerina-name" : "referenceType"
+        } ],
+        "requestBody" : {
+          "description" : "Payload to be sent with the request",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SearchPreferencesRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SearchPreferencesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -938,39 +1287,120 @@
         "type" : "object",
         "properties" : {
           "pageSize" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : "Number of items per page"
           },
           "page" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : "Current page number"
           },
           "items" : {
             "type" : "array",
+            "description" : "Array of event definitions",
             "items" : {
               "$ref" : "#/components/schemas/EventDefinition"
             }
           }
-        }
+        },
+        "description" : "List of event definitions"
       },
-      "ValidateEmailResponse" : {
+      "SearchPreferencesResponse" : {
+        "required" : [ "items", "requestServiceMessageID", "responseDateTime", "resultMessages", "rowsAffected", "serviceMessageID" ],
         "type" : "object",
         "properties" : {
-          "valid" : {
-            "type" : "boolean",
-            "description" : "Indicates whether the email address is valid"
-          },
-          "failedValidation" : {
+          "responseDateTime" : {
             "type" : "string",
-            "description" : "The validator that failed, if any"
+            "description" : "Date and time of the response",
+            "format" : "date-time"
           },
-          "email" : {
+          "rowsAffected" : {
+            "type" : "integer",
+            "description" : "Number of rows returned"
+          },
+          "serviceMessageID" : {
             "type" : "string",
-            "description" : "The email address that was validated"
+            "description" : "Service message ID for the response",
+            "format" : "uuid"
+          },
+          "requestServiceMessageID" : {
+            "type" : "string",
+            "description" : "Service message ID for the request",
+            "format" : "uuid"
+          },
+          "resultMessages" : {
+            "type" : "array",
+            "description" : "Array of messages about the request",
+            "items" : {
+              "type" : "object"
+            }
+          },
+          "items" : {
+            "type" : "array",
+            "description" : "Array of contact preferences found",
+            "items" : {
+              "$ref" : "#/components/schemas/ContactPreferenceEntity"
+            }
           }
         },
+        "description" : "Response for searching contact preferences",
         "example" : {
-          "email" : "help@example.com",
-          "valid" : false,
-          "failedValidation" : "ListDetectiveValidator"
+          "items" : [ {
+            "contactID" : 12345,
+            "hasOptedOutTracking" : false
+          } ],
+          "rowsAffected" : 1,
+          "requestServiceMessageID" : "d613f535-eea8-435e-a59c-59ec6ab4bebd",
+          "responseDateTime" : "2019-01-23T15:04:14.7305707-06:00",
+          "resultMessages" : [ ],
+          "serviceMessageID" : "29029de0-abe4-4216-985d-4a8d78883dfa"
+        }
+      },
+      "Address" : {
+        "type" : "object",
+        "properties" : {
+          "contactID" : {
+            "type" : "object",
+            "description" : "Type-value object specifying ContactID tied to given address"
+          },
+          "addressTypeID" : {
+            "type" : "integer",
+            "description" : "Type of the retrieved address: EMAIL: 1 MOBILE: 4 PUSH: 9 LINE: 10"
+          },
+          "addressKey" : {
+            "type" : "object",
+            "description" : "Type-value object specifying the AddressKey for retrieved address"
+          },
+          "modifiedDate" : {
+            "type" : "string",
+            "description" : "Last modified date value of retrieved address"
+          },
+          "contactKey" : {
+            "type" : "object",
+            "description" : "Type-value object specifying ContactKey tied to given address"
+          },
+          "valueSets" : {
+            "type" : "array",
+            "description" : "Object array containing value set information of pertinent attributes retrieved for address",
+            "items" : {
+              "$ref" : "#/components/schemas/AddressValueSets"
+            }
+          },
+          "source" : {
+            "type" : "integer",
+            "description" : "Source value of retrieved address"
+          },
+          "addressID" : {
+            "type" : "object",
+            "description" : "Type-value object specifying the AddressID for retrieved address"
+          },
+          "status" : {
+            "type" : "integer",
+            "description" : "Status value of retrieved address"
+          },
+          "ordinal" : {
+            "type" : "integer",
+            "description" : "Ordinal value of retrieved address"
+          }
         }
       },
       "JourneysList" : {
@@ -999,6 +1429,33 @@
         },
         "additionalProperties" : true,
         "description" : "Response containing a collection of journeys"
+      },
+      "AddressValues" : {
+        "type" : "object",
+        "properties" : {
+          "valueID" : {
+            "type" : "string",
+            "description" : "An auto-generated guid representing a retrieved attribute value for the retrieved address",
+            "format" : "uuid"
+          },
+          "definitionName" : {
+            "type" : "string",
+            "description" : "The value definition name of a retrieved attribute for retrieved address"
+          },
+          "innerValue" : {
+            "type" : "string",
+            "description" : "Actual value of a retrieved attribute for the retrieved address"
+          },
+          "definitionKey" : {
+            "type" : "string",
+            "description" : "The value definition key of a retrieved attribute for retrieved address"
+          },
+          "definitionID" : {
+            "type" : "string",
+            "description" : "The value definition ID of a retrieved attribute for retrieved address",
+            "format" : "uuid"
+          }
+        }
       },
       "DataExtensionRow" : {
         "required" : [ "keys", "values" ],
@@ -1043,21 +1500,11 @@
             "description" : "Email address to validate"
           }
         },
+        "description" : "Request body for validating an email address",
         "example" : {
           "email" : "help@example.com",
           "validators" : [ "SyntaxValidator", "MXValidator", "ListDetectiveValidator" ]
         }
-      },
-      "FireEventResponse" : {
-        "type" : "object",
-        "properties" : {
-          "eventInstanceId" : {
-            "type" : "string",
-            "description" : "Unique ID for the fired event instance",
-            "format" : "uuid"
-          }
-        },
-        "additionalProperties" : true
       },
       "Activity" : {
         "required" : [ "key", "type" ],
@@ -1100,23 +1547,6 @@
         "additionalProperties" : true,
         "description" : "Represents a single activity in a journey"
       },
-      "ContactMembershipRequest" : {
-        "required" : [ "ContactKey" ],
-        "type" : "object",
-        "properties" : {
-          "ContactKeyList" : {
-            "type" : "array",
-            "description" : "The list of unique keys that identify the contacts",
-            "items" : {
-              "type" : "string"
-            },
-            "x-ballerina-name" : "contactKeyList"
-          }
-        },
-        "example" : {
-          "ContactKeyList" : [ "DD301", "0036A000002FDbFQAW" ]
-        }
-      },
       "Extras" : {
         "type" : "string",
         "description" : "Extras to include. Values:\n- all: Fetch all extras\n- activities: Include journey activities\n- outcomes: Include journey outcomes\n- stats: Include journey statistics\n- '': No extras (default)",
@@ -1128,33 +1558,7 @@
         "properties" : {
           "schema" : {
             "type" : "object",
-            "description" : " Schema information for an event. The call uses this information to create a data extension associated with the Event Definition. Only required when not providing a dataExtensionId value"
-          },
-          "sourceApplicationExtensionId" : {
-            "type" : "string",
-            "description" : "A link to the application extension that defines the configuration screens for this type. Journey Builder uses this ID to filter shared entry sources. For example, for the Event Definition to be visible in the Existing Entry sources panel in the UI, this field must be populated. To obtain this value, perform a GET eventDefinition on similar events in Journey Builder"
-          },
-          "isVisibleInPicker" : {
-            "type" : "boolean",
-            "description" : "If true, makes this event visible in the Journey Builder Event Picker UI"
-          },
-          "configuration" : {
-            "type" : "object",
-            "additionalProperties" : true,
-            "description" : "Optional configuration data for the event definition. Can include additional settings or parameters"
-          },
-          "description" : {
-            "type" : "string",
-            "description" : "Optional description for the event definition, visible in UI"
-          },
-          "type" : {
-            "type" : "string",
-            "description" : "Type of the event definition (e.g., 'RestEvent')",
-            "enum" : [ "Event", "ContactEvent", "DateEvent", "RestEvent" ]
-          },
-          "dataExtensionId" : {
-            "type" : "string",
-            "description" : "ID of the Data Extension used as the data source for the event. Optional if 'schema' is provided inline"
+            "description" : "Schema information for an event. The call uses this information to create a data extension associated with the Event Definition. Only required when not providing a dataExtensionId value"
           },
           "eventDefinitionKey" : {
             "type" : "string",
@@ -1173,70 +1577,53 @@
             "additionalProperties" : true,
             "description" : "Optional metadata for the event definition. Can include additional information or settings"
           },
+          "sourceApplicationExtensionId" : {
+            "type" : "string",
+            "description" : "A link to the application extension that defines the configuration screens for this type. Journey Builder uses this ID to filter shared entry sources. For example, for the Event Definition to be visible in the Existing Entry sources panel in the UI, this field must be populated. To obtain this value, perform a GET eventDefinition on similar events in Journey Builder"
+          },
+          "isVisibleInPicker" : {
+            "type" : "boolean",
+            "description" : "If true, makes this event visible in the Journey Builder Event Picker UI"
+          },
+          "configuration" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "Optional configuration data for the event definition. Can include additional settings or parameters"
+          },
           "name" : {
             "type" : "string",
             "description" : "Display name for the event definition. Visible in Journey Builder UI"
-          }
-        }
-      },
-      "UpdateJourney" : {
-        "required" : [ "key", "modifiedDate", "name", "version", "workflowApiVersion" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "description" : "Journey UUID (optional if key is provided)"
-          },
-          "key" : {
-            "type" : "string",
-            "description" : "Customer-defined journey key"
-          },
-          "name" : {
-            "type" : "string",
-            "description" : "Journey display name"
           },
           "description" : {
             "type" : "string",
-            "description" : "Journey description (optional)"
+            "description" : "Optional description for the event definition, visible in UI"
           },
-          "version" : {
-            "type" : "integer",
-            "description" : "Version number to update"
-          },
-          "workflowApiVersion" : {
-            "type" : "number",
-            "description" : "Journey spec version (0.5 or 1.0)",
-            "format" : "float"
-          },
-          "modifiedDate" : {
+          "type" : {
             "type" : "string",
-            "description" : "Current modifiedDate, required to prevent concurrent writes",
-            "format" : "date-time"
+            "description" : "Type of the event definition (e.g., 'RestEvent')",
+            "enum" : [ "Event", "ContactEvent", "DateEvent", "RestEvent" ]
           },
-          "entryMode" : {
+          "dataExtensionId" : {
             "type" : "string",
-            "description" : "Entry mode (e.g., APIEvent, Scheduled)"
-          },
-          "entryEvent" : {
-            "$ref" : "#/components/schemas/EventDefinition"
-          },
-          "goals" : {
-            "type" : "array",
-            "description" : "Goals that define journey completion or exit criteria",
-            "items" : {
-              "$ref" : "#/components/schemas/Goal"
-            }
-          },
-          "activities" : {
-            "type" : "array",
-            "description" : "Activities that define the steps in the journey",
-            "items" : {
-              "$ref" : "#/components/schemas/Activity"
-            }
+            "description" : "ID of the Data Extension used as the data source for the event. Optional if 'schema' is provided inline"
           }
         },
-        "additionalProperties" : true,
-        "description" : "Request body for updating an existing journey"
+        "description" : "Represents an event definition in Journey Builder. An event definition is a reusable component that defines how an event is triggered and processed within a journey"
+      },
+      "ContactPreferenceEntity" : {
+        "description": "Represents a contact preference entity",
+        "required" : [ "contactID" ],
+        "type" : "object",
+        "properties" : {
+          "hasOptedOutTracking" : {
+            "type" : "boolean",
+            "description" : "Indicates whether a contact opted out of tracking information"
+          },
+          "contactID" : {
+            "type" : "integer",
+            "description" : "Unique ID for the contact"
+          }
+        }
       },
       "ActivityOutcomes" : {
         "required" : [ "key", "next" ],
@@ -1284,11 +1671,6 @@
           },
           "EventDefinitionKey" : "APIEvent-0dbe46de-74f9-a309-7778-298c0a565f93"
         }
-      },
-      "JourneyStatus" : {
-        "type" : "string",
-        "description" : "A journey status value to use to filter the results. The ScheduledToSend, Sent, and Stopped statuses exist only in single-send journeys. If you don't specify a status value, the API returns all journeys regardless of their statuses",
-        "enum" : [ "Deleted", "Draft", "Published", "ScheduledToPublish", "Stopped", "Unpublished", "ScheduledToSend", "Sent" ]
       },
       "Goal" : {
         "required" : [ "key", "name" ],
@@ -1346,36 +1728,251 @@
           }
         }
       },
-      "NoChangeResponse" : {
-        "required" : [ "documentation", "errorcode", "message" ],
+      "SearchContactsByAttributeResponse" : {
         "type" : "object",
         "properties" : {
-          "documentation" : {
-            "type" : "string",
-            "example" : ""
+          "addresses" : {
+            "type" : "array",
+            "description" : "Array of all address objects retrieved",
+            "items" : {
+              "$ref" : "#/components/schemas/Address"
+            }
           },
-          "message" : {
-            "type" : "string",
-            "example" : "No change has been processed, supplied data matches that on the server."
-          },
-          "errorcode" : {
+          "pageNumber" : {
             "type" : "integer",
-            "example" : 304
+            "description" : "Page number of results retrieved"
+          },
+          "hasErrors" : {
+            "type" : "boolean",
+            "description" : "Indicates errors occured while processing the request"
+          },
+          "serviceMessageID" : {
+            "type" : "string",
+            "description" : "Service message ID value of the response",
+            "format" : "uuid"
+          },
+          "pageSize" : {
+            "type" : "integer",
+            "description" : "Page size of results retrieved"
+          },
+          "requestServiceMessageID" : {
+            "type" : "string",
+            "description" : "Service message ID value of the request",
+            "format" : "uuid"
+          },
+          "resultMessages" : {
+            "type" : "array",
+            "description" : "Array of returned messages generated while processing the request",
+            "items" : {
+              "type" : "object"
+            }
+          }
+        }
+      },
+      "SearchContactsByEmailResponse" : {
+        "required" : [ "channelAddressResponseEntities" ],
+        "type" : "object",
+        "properties" : {
+          "operationStatus" : {
+            "type" : "string",
+            "description" : "Current operation status"
+          },
+          "serviceMessageID" : {
+            "type" : "string",
+            "description" : "Service message ID for the response",
+            "format" : "uuid"
+          },
+          "channelAddressResponseEntities" : {
+            "type" : "array",
+            "description" : "List of contact keys with their created date and time",
+            "items" : {
+              "$ref" : "#/components/schemas/ChannelAddressResponseEntities"
+            }
+          },
+          "requestServiceMessageID" : {
+            "type" : "string",
+            "description" : "Service message ID for the request",
+            "format" : "uuid"
           }
         },
-        "description" : "Response indicating no changes were made"
+        "description" : "Response contains a list of contact keys with their created date and time"
       },
-      "ContactExitResponse" : {
+      "UpsertContactPreferencesResponse" : {
+        "required" : [ "items", "requestServiceMessageID", "responseDateTime", "resultMessages", "rowsDeleted", "rowsInserted", "rowsUpdated", "serviceMessageID" ],
         "type" : "object",
         "properties" : {
-          "errors" : {
+          "responseDateTime" : {
+            "type" : "string",
+            "description" : "Date and time of the response",
+            "format" : "date-time"
+          },
+          "rowsUpdated" : {
+            "type" : "integer",
+            "description" : "Number of rows updated"
+          },
+          "serviceMessageID" : {
+            "type" : "string",
+            "description" : "Service message ID for the response",
+            "format" : "uuid"
+          },
+          "rowsDeleted" : {
+            "type" : "integer",
+            "description" : "Number of rows deleted"
+          },
+          "requestServiceMessageID" : {
+            "type" : "string",
+            "description" : "Service message ID for the request",
+            "format" : "uuid"
+          },
+          "resultMessages" : {
             "type" : "array",
+            "description" : "Array of messages about the request",
             "items" : {
-              "$ref" : "#/components/schemas/ContactExitStatus"
+              "type" : "object"
+            }
+          },
+          "items" : {
+            "$ref" : "#/components/schemas/ContactPreferenceEntity"
+          },
+          "rowsInserted" : {
+            "type" : "integer",
+            "description" : "Number of rows inserted"
+          }
+        },
+        "description" : "Response for upserting contact preferences"
+      },
+      "ContactAttributeName" : {
+        "type" : "string",
+        "description" : "The name of the contact attribute to search by",
+        "enum" : [ "ContactKey", "LastModifiedDate", "SourceChannel", "Status", "AudienceID" ]
+      },
+      "UpsertContactRequest" : {
+        "required" : [ "attributeSets" ],
+        "type" : "object",
+        "properties" : {
+          "contactID" : {
+            "type" : "string",
+            "description" : "Unique ID for the contact. You must provide either a value for contactKey or contactID"
+          },
+          "contactKey" : {
+            "type" : "string",
+            "description" : "Primary address for the contact. You must provide either a value for contactKey or contactID"
+          },
+          "attributeSets" : {
+            "type" : "array",
+            "description" : "List of attribute sets for the contact",
+            "items" : {
+              "$ref" : "#/components/schemas/AttributeSet"
             }
           }
         },
-        "additionalProperties" : true
+        "description" : "Request body for creating a new contact",
+        "example" : {
+          "attributeSets" : [ {
+            "items" : [ {
+              "values" : [ {
+                "name" : "Email Address",
+                "value" : "aaron.cates+updated@salesforce.com"
+              }, {
+                "name" : "HTML Enabled",
+                "value" : true
+              } ]
+            } ],
+            "name" : "Email Addresses"
+          }, {
+            "items" : [ {
+              "values" : [ {
+                "name" : "Last Name",
+                "value" : "Cates"
+              }, {
+                "name" : "First Name",
+                "value" : "Aaron2"
+              }, {
+                "name" : "Country",
+                "value" : "United States"
+              }, {
+                "name" : "Preferred Store",
+                "value" : "San Francisco"
+              } ]
+            } ],
+            "name" : "Email Demographics"
+          } ],
+          "contactKey" : "postmandemo1"
+        }
+      },
+      "ContactDeleteRequestsResponse" : {
+        "required" : [ "endDateUtc", "operations", "pageNumber", "pageSize", "requestServiceMessageID", "responseDateTime", "resultMessages", "serviceMessageID", "startDateUtc", "statusAsOfDateUtc" ],
+        "type" : "object",
+        "properties" : {
+          "startDateUtc" : {
+            "type" : "string",
+            "description" : "The start date in UTC for the query.",
+            "format" : "date-time"
+          },
+          "endDateUtc" : {
+            "type" : "string",
+            "description" : "The end date in UTC for the query.",
+            "format" : "date-time"
+          },
+          "statusAsOfDateUtc" : {
+            "type" : "string",
+            "description" : "The status date in UTC.",
+            "format" : "date-time"
+          },
+          "pageNumber" : {
+            "type" : "integer",
+            "description" : "The current page number."
+          },
+          "pageSize" : {
+            "type" : "integer",
+            "description" : "The number of items per page."
+          },
+          "operations" : {
+            "type" : "array",
+            "description" : "List of operations.",
+            "items" : {
+              "type" : "object",
+              "additionalProperties" : true
+            }
+          },
+          "requestServiceMessageID" : {
+            "type" : "string",
+            "description" : "ID of the request service message."
+          },
+          "responseDateTime" : {
+            "type" : "string",
+            "description" : "The response date and time.",
+            "format" : "date-time"
+          },
+          "resultMessages" : {
+            "type" : "array",
+            "description" : "Array of result messages.",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "serviceMessageID" : {
+            "type" : "string",
+            "description" : "ID of the service message."
+          }
+        },
+        "additionalProperties" : true,
+        "description" : "Response containing details of contact delete requests"
+      },
+      "ContactKeyEntities" : {
+        "required" : [ "contactKey", "createDate" ],
+        "type" : "object",
+        "properties" : {
+          "contactKey" : {
+            "type" : "string",
+            "description" : "Contact key of the email channel address"
+          },
+          "createDate" : {
+            "type" : "string",
+            "description" : "Contact key creation date",
+            "format" : "date-time"
+          }
+        }
       },
       "ContactExitRequest" : {
         "required" : [ "ContactKey", "DefinitionKey" ],
@@ -1406,72 +2003,23 @@
           "Versions" : [ 2 ]
         } ]
       },
-      "ContactExitStatus" : {
+      "SearchContactsByEmailRequest" : {
+        "required" : [ "channelAddressList" ],
         "type" : "object",
         "properties" : {
-          "contactKey" : {
-            "type" : "string"
-          },
-          "definitionKey" : {
-            "type" : "string"
-          },
-          "status" : {
+          "channelAddressList" : {
             "type" : "array",
+            "description" : "List of email channel addresses for which a contact key is requested",
             "items" : {
-              "$ref" : "#/components/schemas/ContactExitStatusDetail"
+              "type" : "string"
             }
-          }
-        }
-      },
-      "DataExtensionRowSet" : {
-        "type" : "array",
-        "description" : "An array of data extension rows to be upserted",
-        "example" : [ {
-          "keys" : {
-            "SubscriberKey" : "5c68f5c7f230288ba735091"
           },
-          "values" : {
-            "FirstName" : "John",
-            "FollowerCount" : 2,
-            "IsActive" : true,
-            "LastLogin" : "2018-05-23T14:32:00Z",
-            "LastName" : "Smith"
-          }
-        }, {
-          "keys" : {
-            "SubscriberKey" : "5c68f5c7f380288ba5091"
-          },
-          "values" : {
-            "FirstName" : "Jane",
-            "FollowerCount" : 2,
-            "IsActive" : true,
-            "LastLogin" : "2018-05-23T14:32:00Z",
-            "LastName" : "Smith"
-          }
-        } ],
-        "items" : {
-          "$ref" : "#/components/schemas/DataExtensionRow"
-        }
-      },
-      "ContactExitStatusDetail" : {
-        "type" : "object",
-        "properties" : {
-          "definitionInstanceId" : {
-            "type" : "string",
-            "description" : "The unique identifier for the journey instance from which the contact was removed"
-          },
-          "message" : {
-            "type" : "string",
-            "description" : "A message providing additional information about the exit operation"
-          },
-          "version" : {
+          "maximumCount" : {
             "type" : "integer",
-            "description" : "The version of the journey from which the contact was removed"
+            "description" : "Number of contact keys associated with an email channel address. The default value is 1"
           }
-        }
-      },
-      "ContactExitStatusResponse" : {
-        "$ref" : "#/components/schemas/ContactExitStatus"
+        },
+        "description" : "Request body for searching contacts by email channel address"
       },
       "Defaults" : {
         "type" : "object",
@@ -1492,99 +2040,62 @@
         },
         "description" : "An object that contains default values for the journey, such as email expressions. Example: { \"email\": [\"{{Event.event-key.EmailAddress}}\", \"{{Contact.Default.Email}}\"] }"
       },
-      "EventDefinitionSchedule" : {
-        "required" : [ "EndType", "Frequency", "RecurrencePattern", "StartDateTime" ],
+      "ContactPreferencesResponse" : {
         "type" : "object",
         "properties" : {
-          "StartDateTime" : {
-            "type" : "string",
-            "description" : "The first time the scheduled automation should run.",
-            "format" : "date-time"
-          },
-          "EndDateTime" : {
-            "type" : "string",
-            "description" : "The last time the scheduled automation should run. Required if EndType = EndDate.",
-            "format" : "date-time"
-          },
-          "Occurrences" : {
+          "responseDateTime" : {
             "type" : "integer",
-            "description" : "How many times the scheduled automation should run. Required if EndType = Occurrences."
+            "description" : "Date and time of the retry response in UTC"
           },
-          "EndType" : {
-            "type" : "string",
-            "description" : "EndDate or Occurrences, indicates if automation schedule should stop after a specified date or a specified number of runs.",
-            "enum" : [ "EndDate", "Occurrences" ]
-          },
-          "Frequency" : {
-            "type" : "string",
-            "description" : "Minutely, Hourly, Daily, Weekly, Monthly, Yearly",
-            "enum" : [ "Minutely", "Hourly", "Daily", "Weekly", "Monthly", "Yearly" ]
-          },
-          "RecurrencePattern" : {
-            "type" : "string",
-            "description" : "Interval - used by Minutely, Hourly, Daily; EveryWeekDay - used by Daily; ByDay - used by Weekly, Monthly, Yearly; ByWeek - used by Monthly, Yearly",
-            "enum" : [ "Interval", "EveryWeekDay", "ByDay", "ByWeek" ]
-          },
-          "Interval" : {
+          "rowsAffected" : {
             "type" : "integer",
-            "description" : "Used for Minutely, Hourly, Daily, Weekly, and Monthly schedules (not used for Yearly). Required if RecurrencePattern = Interval."
+            "description" : "Number of rows returned"
           },
-          "Sunday" : {
-            "type" : "boolean",
-            "description" : "Only used for weekly schedules. May be null."
-          },
-          "Monday" : {
-            "type" : "boolean",
-            "description" : "Only used for weekly schedules. May be null."
-          },
-          "Tuesday" : {
-            "type" : "boolean",
-            "description" : "Only used for weekly schedules. May be null."
-          },
-          "Wednesday" : {
-            "type" : "boolean",
-            "description" : "Only used for weekly schedules. May be null."
-          },
-          "Thursday" : {
-            "type" : "boolean",
-            "description" : "Only used for weekly schedules. May be null."
-          },
-          "Friday" : {
-            "type" : "boolean",
-            "description" : "Only used for weekly schedules. May be null."
-          },
-          "Saturday" : {
-            "type" : "boolean",
-            "description" : "Only used for weekly schedules. May be null."
-          },
-          "ScheduledDay" : {
-            "type" : "integer",
-            "description" : "Day of month (1 to 31), used for Monthly and Yearly schedules."
-          },
-          "ScheduledDayOfWeek" : {
+          "serviceMessageID" : {
             "type" : "string",
-            "description" : "Name of day of week (Sunday), used for Monthly and Yearly schedules."
+            "description" : "Service message ID for the response",
+            "format" : "uuid"
           },
-          "ScheduledWeek" : {
+          "requestServiceMessageID" : {
             "type" : "string",
-            "description" : "First, Second, Third, Fourth, Last, used for Monthly and Yearly schedules.",
-            "enum" : [ "First", "Second", "Third", "Fourth", "Last" ]
+            "description" : "Service message ID for the request",
+            "format" : "uuid"
+          },
+          "resultMessages" : {
+            "type" : "array",
+            "description" : "Array of messages about the request. Includes details, such as resulttype and resultcode, about a bad request",
+            "items" : {
+              "type" : "object"
+            }
+          },
+          "value" : {
+            "$ref" : "#/components/schemas/ContactPreferenceEntity"
           }
         },
-        "additionalProperties" : true,
-        "description" : "Optionally define a schedule for the event. Used to trigger the event on a recurring basis"
+        "description" : "Retrieved contact preferences by contact key"
       },
-      "ContactMembershipDetail" : {
+      "AddressValueSets" : {
         "type" : "object",
         "properties" : {
-          "contactKey" : {
-            "type" : "string"
+          "definitionName" : {
+            "type" : "string",
+            "description" : "Default name assigned to represent the Set Definition of value Set information for retrieved address"
+          },
+          "values" : {
+            "type" : "array",
+            "description" : "Object array containing property definition and actual value information of attributes retrieved for address",
+            "items" : {
+              "$ref" : "#/components/schemas/AddressValues"
+            }
           },
           "definitionKey" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Default key assigned to represent the Set Definition of value Set information for retrieved address"
           },
-          "version" : {
-            "type" : "integer"
+          "definitionID" : {
+            "type" : "string",
+            "description" : "Default ID assigned to represent the Set Definition of value Set information for retrieved address",
+            "format" : "uuid"
           }
         }
       },
@@ -1716,12 +2227,565 @@
           "workflowApiVersion" : 1
         }
       },
+      "UpsertContactResponse" : {
+        "required" : [ "contactID", "contactKey", "hasErrors", "isNewContactKey", "operationStatus", "responseDateTime", "rowsAffected" ],
+        "type" : "object",
+        "properties" : {
+          "operationStatus" : {
+            "type" : "string",
+            "description" : "Status of the operation (e.g., OK)."
+          },
+          "rowsAffected" : {
+            "type" : "integer",
+            "description" : "Number of rows affected by the operation."
+          },
+          "contactKey" : {
+            "type" : "string",
+            "description" : "The unique key of the contact."
+          },
+          "contactID" : {
+            "type" : "integer",
+            "description" : "The system-generated ID of the contact."
+          },
+          "contactTypeID" : {
+            "type" : "integer",
+            "description" : "The type ID of the contact."
+          },
+          "isNewContactKey" : {
+            "type" : "boolean",
+            "description" : "Indicates whether the contact key is newly created."
+          },
+          "requestServiceMessageID" : {
+            "type" : "string",
+            "description" : "The ID of the request message."
+          },
+          "responseDateTime" : {
+            "type" : "string",
+            "description" : "The date and time of the response.",
+            "format" : "date-time"
+          },
+          "hasErrors" : {
+            "type" : "boolean",
+            "description" : "Indicates if any errors occurred during the operation."
+          },
+          "resultMessages" : {
+            "type" : "array",
+            "description" : "List of result messages.",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "serviceMessageID" : {
+            "type" : "string",
+            "description" : "The ID of the service message."
+          }
+        },
+        "additionalProperties" : true
+      },
+      "ChannelAddressResponseEntities" : {
+        "required" : [ "channelAddress", "contactKeyDetails" ],
+        "type" : "object",
+        "properties" : {
+          "channelAddress" : {
+            "type" : "string",
+            "description" : "Channel address of the email channel"
+          },
+          "contactKeyDetails" : {
+            "type" : "array",
+            "description" : "Contact key details associated with the channel address",
+            "items" : {
+              "$ref" : "#/components/schemas/ContactKeyEntities"
+            }
+          }
+        }
+      },
+      "ContactAttributeFilterCondition" : {
+        "required" : [ "filterConditionOperator", "filterConditionValue" ],
+        "type" : "object",
+        "properties" : {
+          "filterConditionOperator" : {
+            "type" : "string",
+            "description" : "Filter condition operator name"
+          },
+          "filterConditionValue" : {
+            "type" : "string",
+            "description" : "Value for attribute used in search criteria for contacts and associated addresses. When using the \"LastModifiedDate\" attributeName, separate the values for start and end date in the filterConditionValue with an \"AND\". The \"Channel\" attributeName supports these values: MOBILE PUSH LINE EMAIL"
+          }
+        },
+        "description" : "Filter condition for searching contacts by attribute"
+      },
+      "ValidateEmailResponse" : {
+        "type" : "object",
+        "properties" : {
+          "valid" : {
+            "type" : "boolean",
+            "description" : "Indicates whether the email address is valid"
+          },
+          "failedValidation" : {
+            "type" : "string",
+            "description" : "The validator that failed, if any"
+          },
+          "email" : {
+            "type" : "string",
+            "description" : "The email address that was validated"
+          }
+        },
+        "example" : {
+          "email" : "help@example.com",
+          "valid" : false,
+          "failedValidation" : "ListDetectiveValidator"
+        }
+      },
+      "SearchPreferencesRequestItems" : {
+        "oneOf" : [ {
+          "$ref" : "#/components/schemas/ItemsOneOf1"
+        }, {
+          "$ref" : "#/components/schemas/ItemsItemsOneOf12"
+        } ]
+      },
+      "FireEventResponse" : {
+        "type" : "object",
+        "properties" : {
+          "eventInstanceId" : {
+            "type" : "string",
+            "description" : "Unique ID for the fired event instance",
+            "format" : "uuid"
+          }
+        },
+        "additionalProperties" : true
+      },
+      "ContactMembershipRequest" : {
+        "required" : [ "ContactKey" ],
+        "type" : "object",
+        "properties" : {
+          "ContactKeyList" : {
+            "type" : "array",
+            "description" : "The list of unique keys that identify the contacts",
+            "items" : {
+              "type" : "string"
+            },
+            "x-ballerina-name" : "contactKeyList"
+          }
+        },
+        "example" : {
+          "ContactKeyList" : [ "DD301", "0036A000002FDbFQAW" ]
+        }
+      },
+      "UpdateJourney" : {
+        "required" : [ "key", "modifiedDate", "name", "version", "workflowApiVersion" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Journey UUID (optional if key is provided)"
+          },
+          "key" : {
+            "type" : "string",
+            "description" : "Customer-defined journey key"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Journey display name"
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Journey description (optional)"
+          },
+          "version" : {
+            "type" : "integer",
+            "description" : "Version number to update"
+          },
+          "workflowApiVersion" : {
+            "type" : "number",
+            "description" : "Journey spec version (0.5 or 1.0)",
+            "format" : "float"
+          },
+          "modifiedDate" : {
+            "type" : "string",
+            "description" : "Current modifiedDate, required to prevent concurrent writes",
+            "format" : "date-time"
+          },
+          "entryMode" : {
+            "type" : "string",
+            "description" : "Entry mode (e.g., APIEvent, Scheduled)"
+          },
+          "entryEvent" : {
+            "$ref" : "#/components/schemas/EventDefinition"
+          },
+          "goals" : {
+            "type" : "array",
+            "description" : "Goals that define journey completion or exit criteria",
+            "items" : {
+              "$ref" : "#/components/schemas/Goal"
+            }
+          },
+          "activities" : {
+            "type" : "array",
+            "description" : "Activities that define the steps in the journey",
+            "items" : {
+              "$ref" : "#/components/schemas/Activity"
+            }
+          }
+        },
+        "additionalProperties" : true,
+        "description" : "Request body for updating an existing journey"
+      },
+      "JourneyStatus" : {
+        "type" : "string",
+        "description" : "A journey status value to use to filter the results. The ScheduledToSend, Sent, and Stopped statuses exist only in single-send journeys. If you don't specify a status value, the API returns all journeys regardless of their statuses",
+        "enum" : [ "Deleted", "Draft", "Published", "ScheduledToPublish", "Stopped", "Unpublished", "ScheduledToSend", "Sent" ]
+      },
+      "AttributeSetItem" : {
+        "required" : [ "values" ],
+        "type" : "object",
+        "properties" : {
+          "values" : {
+            "type" : "array",
+            "description" : "List of name/value pairs for the attributes",
+            "items" : {
+              "$ref" : "#/components/schemas/AttributeSetValue"
+            }
+          }
+        },
+        "description" : "Represents an item in an attribute set, containing multiple attributes"
+      },
+      "NoChangeResponse" : {
+        "required" : [ "documentation", "errorcode", "message" ],
+        "type" : "object",
+        "properties" : {
+          "documentation" : {
+            "type" : "string",
+            "example" : ""
+          },
+          "message" : {
+            "type" : "string",
+            "example" : "No change has been processed, supplied data matches that on the server."
+          },
+          "errorcode" : {
+            "type" : "integer",
+            "example" : 304
+          }
+        },
+        "description" : "Response indicating no changes were made"
+      },
+      "ContactPreferencesRequest" : {
+        "required" : [ "items" ],
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "description" : "Array of contact IDs and other properties to add",
+            "items" : {
+              "$ref" : "#/components/schemas/ContactPreferenceEntity"
+            }
+          }
+        },
+        "description" : "Request to upsert contact preferences"
+      },
+      "ContactExitResponse" : {
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ContactExitStatus"
+            }
+          }
+        },
+        "additionalProperties" : true
+      },
+      "ItemsOneOf1" : {
+        "type" : "string"
+      },
+      "AttributeSetValue" : {
+        "required" : [ "name", "value" ],
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "description" : "Name of the attribute"
+          },
+          "value" : {
+            "description" : "Value of the attribute",
+            "oneOf" : [ {
+              "type" : "string"
+            }, {
+              "type" : "boolean"
+            }, {
+              "type" : "number"
+            }, {
+              "type" : "integer"
+            } ]
+          }
+        },
+        "description" : "Represents a name/value pair for an attribute"
+      },
+      "ContactExitStatus" : {
+        "type" : "object",
+        "properties" : {
+          "contactKey" : {
+            "type" : "string"
+          },
+          "definitionKey" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ContactExitStatusDetail"
+            }
+          }
+        }
+      },
+      "DataExtensionRowSet" : {
+        "type" : "array",
+        "description" : "An array of data extension rows to be upserted",
+        "example" : [ {
+          "keys" : {
+            "SubscriberKey" : "5c68f5c7f230288ba735091"
+          },
+          "values" : {
+            "FirstName" : "John",
+            "FollowerCount" : 2,
+            "IsActive" : true,
+            "LastLogin" : "2018-05-23T14:32:00Z",
+            "LastName" : "Smith"
+          }
+        }, {
+          "keys" : {
+            "SubscriberKey" : "5c68f5c7f380288ba5091"
+          },
+          "values" : {
+            "FirstName" : "Jane",
+            "FollowerCount" : 2,
+            "IsActive" : true,
+            "LastLogin" : "2018-05-23T14:32:00Z",
+            "LastName" : "Smith"
+          }
+        } ],
+        "items" : {
+          "$ref" : "#/components/schemas/DataExtensionRow"
+        }
+      },
+      "ContactExitStatusDetail" : {
+        "type" : "object",
+        "properties" : {
+          "definitionInstanceId" : {
+            "type" : "string",
+            "description" : "The unique identifier for the journey instance from which the contact was removed"
+          },
+          "message" : {
+            "type" : "string",
+            "description" : "A message providing additional information about the exit operation"
+          },
+          "version" : {
+            "type" : "integer",
+            "description" : "The version of the journey from which the contact was removed"
+          }
+        }
+      },
+      "ContactExitStatusResponse" : {
+        "$ref" : "#/components/schemas/ContactExitStatus"
+      },
+      "AttributeSet" : {
+        "required" : [ "items", "name" ],
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "description" : "Name of the attribute set (e.g., 'Email Addresses', 'Email Demographics')"
+          },
+          "items" : {
+            "type" : "array",
+            "description" : "List of items for the attribute set",
+            "items" : {
+              "$ref" : "#/components/schemas/AttributeSetItem"
+            }
+          }
+        },
+        "description" : "Represents a set of attributes for a contact"
+      },
+      "EventDefinitionSchedule" : {
+        "required" : [ "EndType", "Frequency", "RecurrencePattern", "StartDateTime" ],
+        "type" : "object",
+        "properties" : {
+          "StartDateTime" : {
+            "type" : "string",
+            "description" : "The first time the scheduled automation should run.",
+            "format" : "date-time"
+          },
+          "EndDateTime" : {
+            "type" : "string",
+            "description" : "The last time the scheduled automation should run. Required if EndType = EndDate.",
+            "format" : "date-time"
+          },
+          "Occurrences" : {
+            "type" : "integer",
+            "description" : "How many times the scheduled automation should run. Required if EndType = Occurrences."
+          },
+          "EndType" : {
+            "type" : "string",
+            "description" : "EndDate or Occurrences, indicates if automation schedule should stop after a specified date or a specified number of runs.",
+            "enum" : [ "EndDate", "Occurrences" ]
+          },
+          "Frequency" : {
+            "type" : "string",
+            "description" : "Minutely, Hourly, Daily, Weekly, Monthly, Yearly",
+            "enum" : [ "Minutely", "Hourly", "Daily", "Weekly", "Monthly", "Yearly" ]
+          },
+          "RecurrencePattern" : {
+            "type" : "string",
+            "description" : "Interval - used by Minutely, Hourly, Daily; EveryWeekDay - used by Daily; ByDay - used by Weekly, Monthly, Yearly; ByWeek - used by Monthly, Yearly",
+            "enum" : [ "Interval", "EveryWeekDay", "ByDay", "ByWeek" ]
+          },
+          "Interval" : {
+            "type" : "integer",
+            "description" : "Used for Minutely, Hourly, Daily, Weekly, and Monthly schedules (not used for Yearly). Required if RecurrencePattern = Interval."
+          },
+          "Sunday" : {
+            "type" : "boolean",
+            "description" : "Only used for weekly schedules. May be null."
+          },
+          "Monday" : {
+            "type" : "boolean",
+            "description" : "Only used for weekly schedules. May be null."
+          },
+          "Tuesday" : {
+            "type" : "boolean",
+            "description" : "Only used for weekly schedules. May be null."
+          },
+          "Wednesday" : {
+            "type" : "boolean",
+            "description" : "Only used for weekly schedules. May be null."
+          },
+          "Thursday" : {
+            "type" : "boolean",
+            "description" : "Only used for weekly schedules. May be null."
+          },
+          "Friday" : {
+            "type" : "boolean",
+            "description" : "Only used for weekly schedules. May be null."
+          },
+          "Saturday" : {
+            "type" : "boolean",
+            "description" : "Only used for weekly schedules. May be null."
+          },
+          "ScheduledDay" : {
+            "type" : "integer",
+            "description" : "Day of month (1 to 31), used for Monthly and Yearly schedules."
+          },
+          "ScheduledDayOfWeek" : {
+            "type" : "string",
+            "description" : "Name of day of week (Sunday), used for Monthly and Yearly schedules."
+          },
+          "ScheduledWeek" : {
+            "type" : "string",
+            "description" : "First, Second, Third, Fourth, Last, used for Monthly and Yearly schedules.",
+            "enum" : [ "First", "Second", "Third", "Fourth", "Last" ]
+          }
+        },
+        "additionalProperties" : true,
+        "description" : "Optionally define a schedule for the event. Used to trigger the event on a recurring basis"
+      },
+      "SearchPreferencesRequest" : {
+        "required" : [ "items" ],
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "description" : "Array of contact keys or IDs to search for preferences",
+            "items" : {
+              "$ref" : "#/components/schemas/SearchPreferencesRequestItems"
+            }
+          }
+        },
+        "description" : "Request to search contact preferences"
+      },
+      "ItemsItemsOneOf12" : {
+        "type" : "integer"
+      },
+      "ContactDeleteResponse" : {
+        "required" : [ "hasErrors", "operationID", "operationInitiated", "requestServiceMessageID", "responseDateTime", "resultMessages", "serviceMessageID" ],
+        "type" : "object",
+        "properties" : {
+          "operationInitiated" : {
+            "type" : "boolean",
+            "description" : "Indicates if the operation was initiated successfully"
+          },
+          "operationID" : {
+            "type" : "integer",
+            "description" : "Unique identifier for the initiated operation"
+          },
+          "requestServiceMessageID" : {
+            "type" : "string",
+            "description" : "ID of the request message"
+          },
+          "responseDateTime" : {
+            "type" : "string",
+            "description" : "Date and time of the response",
+            "format" : "date-time"
+          },
+          "hasErrors" : {
+            "type" : "boolean",
+            "description" : "Indicates if there were any errors during the operation"
+          },
+          "resultMessages" : {
+            "type" : "array",
+            "description" : "List of result messages from the operation",
+            "items" : {
+              "type" : "object"
+            }
+          },
+          "serviceMessageID" : {
+            "type" : "string",
+            "description" : "ID of the service message"
+          }
+        },
+        "additionalProperties" : true
+      },
+      "ContactMembershipDetail" : {
+        "type" : "object",
+        "properties" : {
+          "contactKey" : {
+            "type" : "string"
+          },
+          "definitionKey" : {
+            "type" : "string"
+          },
+          "version" : {
+            "type" : "integer"
+          }
+        }
+      },
       "ContactMembershipResponse" : {
         "type" : "object",
         "properties" : {
           "results" : {
             "$ref" : "#/components/schemas/ContactMembership"
           }
+        }
+      },
+      "ContactDeleteRequest" : {
+        "required" : [ "DeleteOperationType", "values" ],
+        "type" : "object",
+        "properties" : {
+          "values" : {
+            "type" : "array",
+            "description" : "List of contact keys or IDs to delete",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "DeleteOperationType" : {
+            "type" : "string",
+            "description" : "Type of delete operation to perform",
+            "enum" : [ "ContactAndAttributes", "AttributesOnly" ],
+            "x-ballerina-name" : "deleteOperationType"
+          }
+        },
+        "example" : {
+          "DeleteOperationType" : "ContactAndAttributes",
+          "values" : [ "postmandemo2" ]
         }
       }
     },
