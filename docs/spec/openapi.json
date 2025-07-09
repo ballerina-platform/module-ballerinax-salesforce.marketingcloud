@@ -1765,6 +1765,113 @@
           }
         }
       }
+    },
+    "/messaging/v1/email/definitions" : {
+      "get" : {
+        "tags" : [ "Messaging & Journeys > REST > Email" ],
+        "summary" : "Get Email Definitions",
+        "description" : "Retrieves a list of email definitions.",
+        "operationId" : "getEmailDefinitions",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/page"
+        }, {
+          "$ref" : "#/components/parameters/pageSize"
+        }, {
+          "name" : "$filter",
+          "in" : "query",
+          "description" : "Filter by status type. Accepted values are active, inactive, or deleted. Valid operations are eq and neq",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "x-ballerina-name" : "filter"
+        }, {
+          "name" : "$orderBy",
+          "in" : "query",
+          "description" : "Sort by a dimension. You can sort by only one dimension. Accepted values are definitionKey, name, createdDate, modifiedDate, and status",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "x-ballerina-name" : "orderBy"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of email definitions",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EmailDefinitionList"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Messaging & Journeys > REST > Email" ],
+        "summary" : "Create Email Definition",
+        "description" : "Creates a new email definition with the specified information.",
+        "operationId" : "createEmailDefinition",
+        "requestBody" : {
+          "description" : "Payload to be sent with the request",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateEmailDefinition"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Email definition created successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EmailDefinition"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/messaging/v1/email/messages" : {
+      "post" : {
+        "tags" : [ "Messaging & Journeys > REST > Email" ],
+        "summary" : "Send Email Message",
+        "description" : "Sends an email message using a previously created email definition.",
+        "operationId" : "sendEmailMessage",
+        "requestBody" : {
+          "description" : "Payload to be sent with the request",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SendEmailMessageRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "202" : {
+            "description" : "Email message accepted for processing",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SendEmailMessageResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -1789,6 +1896,49 @@
           }
         },
         "description" : "List of event definitions"
+      },
+      "EmailDefinitionList" : {
+        "required" : [ "count", "definitions", "page", "pageSize" ],
+        "type" : "object",
+        "properties" : {
+          "requestId" : {
+            "type" : "string",
+            "description" : "Unique identifier for the request"
+          },
+          "count" : {
+            "type" : "integer",
+            "description" : "Number of items returned"
+          },
+          "pageSize" : {
+            "type" : "integer",
+            "description" : "Number of items per page"
+          },
+          "page" : {
+            "type" : "integer",
+            "description" : "Current page number"
+          },
+          "definitions" : {
+            "type" : "array",
+            "description" : "List of email definitions",
+            "items" : {
+              "$ref" : "#/components/schemas/EmailDefinitionSummary"
+            }
+          }
+        },
+        "description" : "List of email definitions",
+        "example" : {
+          "requestId" : "ba9633fa-5c8d-4c42-8efa-a16412ac0c53",
+          "definitions" : [ {
+            "definitionKey" : "2FA_order_accounts",
+            "status" : "Active",
+            "name" : "My Unique Definition Name",
+            "createdDate" : "2018-07-18T19:52:00",
+            "modifiedDate" : "2018-07-18T19:52:00"
+          } ],
+          "count" : 1,
+          "page" : 1,
+          "pageSize" : 10
+        }
       },
       "SearchPreferencesResponse" : {
         "required" : [ "items", "requestServiceMessageID", "responseDateTime", "resultMessages", "rowsAffected", "serviceMessageID" ],
@@ -1840,6 +1990,61 @@
           "resultMessages" : [ ],
           "serviceMessageID" : "29029de0-abe4-4216-985d-4a8d78883dfa"
         }
+      },
+      "EmailDefinition" : {
+        "required" : [ "content", "createdDate", "definitionKey", "modifiedDate", "name", "status", "subscriptions" ],
+        "type" : "object",
+        "properties" : {
+          "subscriptions" : {
+            "$ref" : "#/components/schemas/EmailDefinitionSubscriptions"
+          },
+          "createdDate" : {
+            "type" : "string",
+            "description" : "Date the definition was created",
+            "format" : "date-time"
+          },
+          "requestId" : {
+            "type" : "string",
+            "description" : "The unique identifier of this request"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Name of the definition"
+          },
+          "modifiedDate" : {
+            "type" : "string",
+            "description" : "Date and time the definition was most recently changed",
+            "format" : "date-time"
+          },
+          "options" : {
+            "$ref" : "#/components/schemas/EmailDefinitionOptions"
+          },
+          "definitionKey" : {
+            "type" : "string",
+            "description" : "Unique, user-generated key to access the definition object"
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "User-provided description of the send definition"
+          },
+          "classification" : {
+            "type" : "string",
+            "description" : "The external key of a sending classification defined in Email Studio Administration. Only transactional classifications are permitted. Default is default transactional"
+          },
+          "content" : {
+            "$ref" : "#/components/schemas/CreateEmailDefinitionContent"
+          },
+          "definitionId" : {
+            "type" : "string",
+            "description" : "A unique object ID"
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "Operational state of the definition: active, inactive, or deleted. A message sent to an active definition is processed and delivered. A message sent to an inactive definition isn’t processed or delivered. Instead, the message is queued for later processing for up to three days",
+            "enum" : [ "active", "inactive", "deleted" ]
+          }
+        },
+        "description" : "Represents an email definition in Salesforce Marketing Cloud"
       },
       "Address" : {
         "type" : "object",
@@ -2164,6 +2369,31 @@
         },
         "additionalProperties" : true
       },
+      "EmailDefinitionSubscriptions" : {
+        "required" : [ "list" ],
+        "description": "Subscribers of Email Definition",
+        "type" : "object",
+        "properties" : {
+          "autoAddSubscriber" : {
+            "type" : "boolean",
+            "description" : "Adds the recipient’s email address and contact key as a subscriber key to subscriptions.list. Default is true",
+            "default" : true
+          },
+          "dataExtension" : {
+            "type" : "string",
+            "description" : "The external key of the triggered send data extension. Each request inserts as a new row in the data extension"
+          },
+          "updateSubscriber" : {
+            "type" : "boolean",
+            "description" : "For email only: Updates the recipient’s contact key as a subscriber key with the provided email address and profile attributes to subscriptions.list. Default is true",
+            "default" : true
+          },
+          "list" : {
+            "type" : "string",
+            "description" : "The external key of the list or all subscribers. Contains the subscriber keys and profile attributes"
+          }
+        }
+      },
       "FireEvent" : {
         "required" : [ "ContactKey", "EventDefinitionKey" ],
         "type" : "object",
@@ -2467,6 +2697,24 @@
           "contactKey" : "postmandemo1"
         }
       },
+      "SendEmailMessageResult" : {
+        "required" : [ "messageKey" ],
+        "type" : "object",
+        "properties" : {
+          "messageKey" : {
+            "type" : "string",
+            "description" : "A unique identifier for the message send attempt"
+          },
+          "message" : {
+            "type" : "string",
+            "description" : "Error message for this recipient, if any"
+          },
+          "errorcode" : {
+            "type" : "integer",
+            "description" : "Error code for this recipient, if any"
+          }
+        }
+      },
       "ContactDeleteRequestsResponse" : {
         "required" : [ "endDateUtc", "operations", "pageNumber", "pageSize", "requestServiceMessageID", "responseDateTime", "resultMessages", "serviceMessageID", "startDateUtc", "statusAsOfDateUtc" ],
         "type" : "object",
@@ -2569,6 +2817,44 @@
           "DefinitionKey" : "postman-demo1",
           "Versions" : [ 2 ]
         } ]
+      },
+      "SendEmailMessageResponse" : {
+        "required" : [ "requestId", "responses" ],
+        "type" : "object",
+        "properties" : {
+          "requestId" : {
+            "type" : "string",
+            "description" : "Unique identifier for the request"
+          },
+          "responses" : {
+            "type" : "array",
+            "description" : "Array of message send results, one per recipient",
+            "items" : {
+              "$ref" : "#/components/schemas/SendEmailMessageResult"
+            }
+          },
+          "message" : {
+            "type" : "string",
+            "description" : "Overall error message, if any"
+          },
+          "errorcode" : {
+            "type" : "integer",
+            "description" : "Error code for the overall request, if any"
+          }
+        },
+        "description" : "Response for sending an email message. Each item in 'responses' corresponds to a recipient and may include error details if the send failed",
+        "example" : {
+          "requestId" : "c261d918-e99e-460c-94dc-3bbfda154c88",
+          "errorcode" : 109001,
+          "message" : "MCMS_UTM_ResponsesHasErrors: 1 subscribers failed to queue out of 2",
+          "responses" : [ {
+            "messageKey" : "gHQ3VLsfCEOuAC2sl-CV1Q",
+            "errorcode" : 109106,
+            "message" : "MCMS_UTM_Validation_MissingRequiredField_to: Invalid subscriber"
+          }, {
+            "messageKey" : "oixAQE_zFUyr8bT8sJncdw"
+          } ]
+        }
       },
       "SearchContactsByEmailRequest" : {
         "required" : [ "channelAddressList" ],
@@ -2836,6 +3122,17 @@
           "workflowApiVersion" : 1
         }
       },
+      "EmailDefinitionOptions" : {
+        "type" : "object",
+        "description": "Options of Email Definitions",
+        "properties" : {
+          "trackLinks" : {
+            "type" : "boolean",
+            "description" : "Wraps links for tracking and reporting. Default is true",
+            "default" : true
+          }
+        }
+      },
       "UpsertContactResponse" : {
         "required" : [ "contactID", "contactKey", "hasErrors", "isNewContactKey", "operationStatus", "responseDateTime", "rowsAffected" ],
         "type" : "object",
@@ -2907,6 +3204,29 @@
             }
           }
         }
+      },
+      "SendEmailMessageRequest" : {
+        "required" : [ "definitionKey", "recipients" ],
+        "type" : "object",
+        "properties" : {
+          "recipients" : {
+            "type" : "array",
+            "description" : "Required. An array of recipient objects containing parameters and metadata for the recipients, such as send tracking and personalization attributes. If this object is present in the request, the recipient array (which is used to send messages to a single recipient) can't be included in the request",
+            "items" : {
+              "$ref" : "#/components/schemas/SendEmailMessagRecipients"
+            }
+          },
+          "definitionKey" : {
+            "type" : "string",
+            "description" : "Required. The ID of the send definition"
+          },
+          "attributes" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "Information used to personalize the message for the request. Written as key-value pairs. The attributes match profile attributes, content attributes, or triggered send data extension attributes"
+          }
+        },
+        "description" : "Request body for sending an email message using a previously created email definition"
       },
       "Category" : {
         "required" : [ "categoryType", "enterpriseId", "id", "memberId", "name", "parentId" ],
@@ -3015,6 +3335,40 @@
         "additionalProperties" : true,
         "description" : "Represents a campaign in Salesforce Marketing Cloud"
       },
+      "CreateEmailDefinitionContent" : {
+        "required" : [ "customerKey" ],
+        "type" : "object",
+        "description": "Content of the Email Definition",
+        "properties" : {
+          "customerKey" : {
+            "type" : "string",
+            "description" : "Unique identifier of the content asset"
+          }
+        }
+      },
+      "SendEmailMessagRecipients" : {
+        "required" : [ "contactKey" ],
+        "type" : "object",
+        "properties" : {
+          "messageKey" : {
+            "type" : "string",
+            "description" : "A unique identifier that you can use to track the status of the message. If not provided, the system generates one. Must be unique among all of the keys used in your business unit over the prior 72 hours. Max 100 characters"
+          },
+          "contactKey" : {
+            "type" : "string",
+            "description" : "Required. A unique identifier for the subscriber. You can create a contact key at send time if the contact isn’t already in Marketing Cloud Engagement"
+          },
+          "attributes" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "Personalization information for the recipient. Written as key-value pairs. The attributes match profile attributes, content attributes, or triggered send data extension attributes"
+          },
+          "to" : {
+            "type" : "string",
+            "description" : "The recipient's email address"
+          }
+        }
+      },
       "FireEventResponse" : {
         "type" : "object",
         "properties" : {
@@ -3106,6 +3460,43 @@
         "type" : "string",
         "description" : "A journey status value to use to filter the results. The ScheduledToSend, Sent, and Stopped statuses exist only in single-send journeys. If you don't specify a status value, the API returns all journeys regardless of their statuses",
         "enum" : [ "Deleted", "Draft", "Published", "ScheduledToPublish", "Stopped", "Unpublished", "ScheduledToSend", "Sent" ]
+      },
+      "CreateEmailDefinition" : {
+        "required" : [ "content", "definitionKey", "name", "subscriptions" ],
+        "type" : "object",
+        "properties" : {
+          "subscriptions" : {
+            "$ref" : "#/components/schemas/EmailDefinitionSubscriptions"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Name of the definition. Must be unique"
+          },
+          "options" : {
+            "$ref" : "#/components/schemas/CreateEmailDefinitionOptions"
+          },
+          "definitionKey" : {
+            "type" : "string",
+            "description" : "Unique, user-generated key to access the definition object"
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "User-provided description of the send definition"
+          },
+          "classification" : {
+            "type" : "string",
+            "description" : "The external key of a sending classification defined in Email Studio Administration. Only transactional classifications are permitted. Default is default transactional"
+          },
+          "content" : {
+            "$ref" : "#/components/schemas/CreateEmailDefinitionContent"
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "Operational state of the definition: active, inactive, or deleted. A message sent to an active definition is processed and delivered. A message sent to an inactive definition isn’t processed or delivered. Instead, the message is queued for later processing for up to three days",
+            "enum" : [ "active", "inactive", "deleted" ]
+          }
+        },
+        "description" : "Request body for creating a new email definition"
       },
       "AssetList" : {
         "required" : [ "count", "items", "links", "page", "pageSize" ],
@@ -3237,6 +3628,35 @@
             }
           }
         }
+      },
+      "EmailDefinitionSummary" : {
+        "required" : [ "createdDate", "definitionKey", "modifiedDate", "name", "status" ],
+        "type" : "object",
+        "properties" : {
+          "createdDate" : {
+            "type" : "string",
+            "description" : "Creation date of the email definition",
+            "format" : "date-time"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Name of the email definition"
+          },
+          "modifiedDate" : {
+            "type" : "string",
+            "description" : "Last modification date of the email definition",
+            "format" : "date-time"
+          },
+          "definitionKey" : {
+            "type" : "string",
+            "description" : "Unique key for the email definition"
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "Status of the email definition"
+          }
+        },
+        "description" : "Email definition object"
       },
       "DataExtensionRowSet" : {
         "type" : "array",
@@ -3476,6 +3896,35 @@
           }
         },
         "additionalProperties" : true
+      },
+      "CreateEmailDefinitionOptions" : {
+        "type" : "object",
+        "description": "Options of Email Defintion",
+        "properties" : {
+          "cc" : {
+            "type" : "array",
+            "description" : "Include CC email addresses with every send. To CC dynamically at send time, create a profile attribute and use the %%attribute%% syntax",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "bcc" : {
+            "type" : "array",
+            "description" : "Include BCC email addresses with every send. To BCC dynamically at send time, create a profile attribute and use the %%attribute%% syntax",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "trackLinks" : {
+            "type" : "boolean",
+            "description" : "Wraps links for tracking and reporting. Default is true",
+            "default" : true
+          },
+          "createJourney" : {
+            "type" : "boolean",
+            "description" : "A value of true updates the send definition to make it available in Journey Builder as a Transactional Send Journey. After the definition is tied to a Transactional Send Journey, the definition remains part of Journey Builder. You can’t unlink a journey from a definition without recreating the transactional send definition"
+          }
+        }
       },
       "ContactMembershipDetail" : {
         "type" : "object",
