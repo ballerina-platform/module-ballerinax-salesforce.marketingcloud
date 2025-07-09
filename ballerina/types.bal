@@ -334,6 +334,16 @@ public type SearchContactsByAttributeResponse record {
     record {}[] resultMessages?;
 };
 
+# Response for importing a data extension file asynchronously
+public type ImportResponse record {
+    # Unique identifier for the request
+    string requestId;
+    # Unique identifier for the import operation
+    int id;
+    # Array of messages about the import request
+    record {}[] resultMessages;
+};
+
 # Response contains a list of contact keys with their created date and time
 public type SearchContactsByEmailResponse record {
     # Current operation status
@@ -687,6 +697,20 @@ public type EmailDefinitionOptions record {
     boolean trackLinks = true;
 };
 
+# Definition for a bulk ingest job targeting a data extension
+public type CreateBulkIngestJob record {
+    # Job status (New, Staging, Queued, Processing, Complete, Error)
+    "New"|"Staging"|"Queued"|"Processing"|"Complete"|"Error" jobStatus?;
+    # Data extension customer key (required)
+    @constraint:String {maxLength: 36}
+    string destinationCustomerKey;
+    # Supported data operation types (required)
+    "AddAndUpdate"|"AddAndDoNotUpdate"|"UpdateButDoNotAdd"|"Overwrite" updateType;
+    # Can specify a value up to 8 hours - this value drives the time allocated to stage data before starting a job. Note: For larger staging time (over 8 hours), contact support
+    @constraint:Int {maxValue: 8}
+    int jobExpirationHours?;
+};
+
 public type ChannelAddressResponseEntities record {
     # Channel address of the email channel
     string channelAddress;
@@ -717,6 +741,16 @@ public type UpsertContactResponse record {
     string[] resultMessages?;
     # The ID of the service message.
     string serviceMessageID?;
+};
+
+# Response containing the summary of a data extension import operation
+public type ImportSummaryResponse record {
+    # Summary of queued data import
+    ImportSummary summary;
+    # Unique identifier for the request
+    string requestId;
+    # Array of messages about the import summary
+    record {}[] resultMessages;
 };
 
 # Represents a content category in Salesforce Marketing Cloud
@@ -764,6 +798,36 @@ public type ContactAttributeFilterCondition record {
     string filterConditionOperator;
     # Value for attribute used in search criteria for contacts and associated addresses. When using the "LastModifiedDate" attributeName, separate the values for start and end date in the filterConditionValue with an "AND". The "Channel" attributeName supports these values: MOBILE PUSH LINE EMAIL
     string filterConditionValue;
+};
+
+# Summary of queued data import
+public type ImportSummary record {
+    # Status of the import operation
+    string importStatus;
+    # Target object ID for the import
+    string targetId;
+    # End date and time of the import operation
+    string endDate;
+    # Number of restricted rows found in the import
+    int restrictedRows;
+    # Type of update performed on the target
+    string targetUpdateType;
+    # Total number of rows processed in the import
+    int totalRows;
+    # Target object key for the import
+    string targetKey;
+    # Number of rows successfully imported
+    int successfulRows;
+    # Unique identifier for the import operation
+    string importId;
+    # Number of duplicate rows found in the import
+    int duplicateRows;
+    # Unique identifier for the import summary
+    int id;
+    # Number of errors encountered during the import
+    int errors;
+    # Start date and time of the import operation
+    string startDate;
 };
 
 # Represents a campaign in Salesforce Marketing Cloud
@@ -901,6 +965,34 @@ public type ContactExitStatus record {
     ContactExitStatusDetail[] status?;
 };
 
+# Request body for importing a data extension file. Inherits properties from fileInfo, target, mapping, and transport
+public type ImportRequest record {
+    # Name of the source file (compressed or uncompressed). In case of multiple files, specify the folder name
+    string specifier;
+    # Indicates if the import should continue past row level errors. Defaults to true
+    boolean allowErrors;
+    # Indicates if the import respects double quotes (") as a text delimiter
+    string standardQuotedStrings?;
+    # Indicates if the specifier has more than one file to import. Defaults to false
+    string hasMultipleFiles;
+    # Default action against a row if no explicit action code is specified
+    string controlColumnDefaultAction?;
+    # The type of the object being imported into. The only supported value is DataExtension
+    string 'type;
+    # Indicates how the content is delimited
+    string contentType;
+    # Column name in the source file that controls row-level action. For example, add, delete, update and so on
+    string controlColumn?;
+    # The unique (customerKey) reference of the data extension
+    string 'key;
+    # The type of import operation to perform against the destination data extension
+    string updateType;
+    # Indicates the type of field mapping
+    string fieldMappingType;
+    # The external key of an active file transfer location
+    string transportKey?;
+};
+
 # Email definition object
 public type EmailDefinitionSummary record {
     # Creation date of the email definition
@@ -998,6 +1090,16 @@ public type AttributeSet record {
     string name;
     # List of items for the attribute set
     AttributeSetItem[] items;
+};
+
+# Response for creating a bulk ingest job targeting a data extension
+public type CreateBulkIngestJobResponse record {
+    # Request ID for tracking the operation
+    string requestId;
+    # Unique identifier for the bulk API definition
+    string bulkApiDefinitionId;
+    # Array of messages about the bulk ingest job
+    record {}[] resultMessages;
 };
 
 # Optionally define a schedule for the event. Used to trigger the event on a recurring basis

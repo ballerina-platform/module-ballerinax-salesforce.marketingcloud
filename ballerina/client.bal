@@ -625,4 +625,40 @@ public isolated client class Client {
         request.setPayload(jsonBody, "application/json");
         return self.clientEp->post(resourcePath, request, headers);
     }
+
+    # Import Data Extension File (Async)
+    #
+    # + headers - Headers to be sent with the request 
+    # + payload - Payload containing import details such as file location and data extension key 
+    # + return - Import request accepted for processing 
+    remote isolated function importDataExtensionAsync(ImportRequest payload, map<string|string[]> headers = {}) returns ImportResponse|error {
+        string resourcePath = string `/data/v1/async/import`;
+        http:Request request = new;
+        json jsonBody = jsondata:toJson(payload);
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
+    # Get Data Extension Import Summary
+    #
+    # + id - The unique identifier for the import operation
+    # + headers - Headers to be sent with the request 
+    # + return - Import summary retrieved successfully 
+    remote isolated function getImportSummary(int id, map<string|string[]> headers = {}) returns ImportSummaryResponse|error {
+        string resourcePath = string `/data/v1/async/import/${getEncodedUri(id)}/summary`;
+        return self.clientEp->get(resourcePath, headers);
+    }
+
+    # Bulk Ingest Data Extension Rows
+    #
+    # + headers - Headers to be sent with the request 
+    # + payload - Payload to be sent with request 
+    # + return - Bulk ingest request accepted and processed 
+    remote isolated function createBulkIngestJob(CreateBulkIngestJob payload, map<string|string[]> headers = {}) returns CreateBulkIngestJobResponse|error {
+        string resourcePath = string `/data/v1/bulk/ingest`;
+        http:Request request = new;
+        json jsonBody = jsondata:toJson(payload);
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
 }
