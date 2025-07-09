@@ -514,4 +514,78 @@ public isolated client class Client {
         request.setPayload(jsonBody, "application/json");
         return self.clientEp->post(resourcePath, request, headers);
     }
+
+    # Get Content Assets
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - List of content assets 
+    remote isolated function getAssets(map<string|string[]> headers = {}, *GetAssetsQueries queries) returns AssetList|error {
+        string resourcePath = string `/asset/v1/content/assets`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        return self.clientEp->get(resourcePath, headers);
+    }
+
+    # Create Content Asset
+    #
+    # + headers - Headers to be sent with the request 
+    # + payload - Payload to be sent with the request 
+    # + return - Content asset created successfully 
+    remote isolated function createAsset(UpsertAsset payload, map<string|string[]> headers = {}) returns Asset|error {
+        string resourcePath = string `/asset/v1/content/assets`;
+        http:Request request = new;
+        json jsonBody = jsondata:toJson(payload);
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
+    # Delete Content Asset
+    #
+    # + id - ID of the content asset to delete
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - Content asset deleted successfully 
+    remote isolated function deleteAsset(int id, map<string|string[]> headers = {}, *DeleteAssetQueries queries) returns error? {
+        string resourcePath = string `/asset/v1/content/assets/${getEncodedUri(id)}`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        return self.clientEp->delete(resourcePath, headers = headers);
+    }
+
+    # Update Content Asset
+    #
+    # + id - ID of the content asset to update
+    # + headers - Headers to be sent with the request 
+    # + payload - Payload to be sent with the request 
+    # + return - Content asset updated successfully 
+    remote isolated function updateAsset(int id, UpsertAsset payload, map<string|string[]> headers = {}) returns Asset|error {
+        string resourcePath = string `/asset/v1/content/assets/${getEncodedUri(id)}`;
+        http:Request request = new;
+        json jsonBody = jsondata:toJson(payload);
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->patch(resourcePath, request, headers);
+    }
+
+    # Get Content Categories
+    #
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - List of content categories 
+    remote isolated function getCategories(map<string|string[]> headers = {}, *GetCategoriesQueries queries) returns CategoryList|error {
+        string resourcePath = string `/asset/v1/content/categories`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        return self.clientEp->get(resourcePath, headers);
+    }
+
+    # Create Content Category
+    #
+    # + headers - Headers to be sent with the request 
+    # + payload - Payload to be sent with the request 
+    # + return - Content category created successfully 
+    remote isolated function createCategory(CreateCategory payload, map<string|string[]> headers = {}) returns Category|error {
+        string resourcePath = string `/asset/v1/content/categories`;
+        http:Request request = new;
+        json jsonBody = jsondata:toJson(payload);
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
 }

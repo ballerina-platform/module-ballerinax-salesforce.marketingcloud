@@ -94,6 +94,24 @@ public type JourneysList record {
     int pageSize;
 };
 
+# Request body for creating or updating a content asset
+public type UpsertAsset record {
+    # Reference to customer's private ID/name for the asset
+    string customerKey?;
+    # Container for asset data
+    record {} data?;
+    # Name of the asset, set by the client. 200 character maximum
+    string name;
+    # Description of the asset, set by the client
+    string description?;
+    # ID of the category the asset belongs to
+    record {} category?;
+    # The type that the Content attribute is in
+    string contentType?;
+    # The type of the asset saved as a name/ID pair
+    record {} assetType;
+};
+
 public type AddressValues record {
     # An auto-generated guid representing a retrieved attribute value for the retrieved address
     string valueID?;
@@ -296,6 +314,26 @@ public type UpsertContactPreferencesResponse record {
 
 # The name of the contact attribute to search by
 public type ContactAttributeName "ContactKey"|"LastModifiedDate"|"SourceChannel"|"Status"|"AudienceID";
+
+# Represents a content asset in Salesforce Marketing Cloud
+public type Asset record {
+    # Unique identifier of the asset.
+    int id;
+    # Reference to customer's private ID/name for the asset.
+    string customerKey;
+    # The type that the Content attribute is in.
+    string contentType?;
+    # Container for asset data.
+    record {} data?;
+    # The type of the asset saved as a name/ID pair.
+    record {} assetType;
+    # Name of the asset, set by the client. 200 character maximum.
+    string name;
+    # Description of the asset, set by the client.
+    string description?;
+    # ID of the category the asset belongs to.
+    record {} category;
+};
 
 # Provides a set of configurations for controlling the behaviours when communicating with a remote HTTP endpoint.
 @display {label: "Connection Config"}
@@ -584,6 +622,26 @@ public type UpsertContactResponse record {
     string serviceMessageID?;
 };
 
+# Represents a content category in Salesforce Marketing Cloud
+public type Category record {
+    # System-assigned ID for the category.
+    int id;
+    # Name of the category.
+    string name;
+    # ID of the parent category.
+    decimal parentId;
+    # The type of category, either asset or asset-shared.
+    string categoryType;
+    # ID of the member who creates the category.
+    decimal memberId;
+    # ID of the enterprise this business unit belongs to.
+    decimal enterpriseId;
+    # Stores the MIDs of business units this category is shared with and the sharing type. Only included in the response if CategoryType is asset-shared.
+    record {} sharingProperties?;
+    # Meta is used much like the data attribute on CMS assets but for internal functionality in Content Builder. If meta is returned, be sure to pass it through the API.
+    record {} meta?;
+};
+
 public type ValidateEmailResponse record {
     # Indicates whether the email address is valid
     boolean valid?;
@@ -655,6 +713,20 @@ public type UpdateJourney record {
 # A journey status value to use to filter the results. The ScheduledToSend, Sent, and Stopped statuses exist only in single-send journeys. If you don't specify a status value, the API returns all journeys regardless of their statuses
 public type JourneyStatus "Deleted"|"Draft"|"Published"|"ScheduledToPublish"|"Stopped"|"Unpublished"|"ScheduledToSend"|"Sent";
 
+# Response containing a collection of content assets
+public type AssetList record {
+    # Total number of assets.
+    int count;
+    # Current page number.
+    int page;
+    # Number of items per page.
+    int pageSize;
+    # Navigation links.
+    record {} links;
+    # List of asset items.
+    Asset[] items;
+};
+
 # Represents an item in an attribute set, containing multiple attributes
 public type AttributeSetItem record {
     # List of name/value pairs for the attributes
@@ -694,6 +766,24 @@ public type DeleteJourneyByKeyQueries record {
 # An array of data extension rows to be upserted
 public type DataExtensionRowSet DataExtensionRow[];
 
+# Represents the Queries record for the operation: getCategories
+public type GetCategoriesQueries record {
+    # Filter by ParentId using a simple operator and value. ParentId is the only allowed field. If you don't provide a $filter parameter, the query returns all the Categories in your MID
+    @http:Query {name: "$filter"}
+    string filter?;
+    # Determines which category property to use for sorting, and also determines the direction in which to sort the data. If you don't provide the $orderBy parameter, the results are sorted by category ID in ascending order
+    @http:Query {name: "$orderBy"}
+    string orderBy?;
+    # Determines which MIDs the query results come from. To return categories that reside in your MID, either don't add the scope parameter or call the endpoint like this: .../categories?scope=Ours. To return categories that are shared to your MID, or that you have shared with other MIDs, call the endpoint like this: .../categories?scope=Shared. To return all categories visible to your MID, call the endpoint like this: .../categories?scope=Ours,Shared
+    "Ours"|"Shared"|"Ours,Shared" scope?;
+    # The page number of results to retrieve. The default value is 1
+    @http:Query {name: "$page"}
+    int page = 1;
+    # The number of items to return on a page of results. The default and maximum value is 50
+    @http:Query {name: "$pageSize"}
+    int pageSize = 50;
+};
+
 # Represents the Queries record for the operation: getEventDefinitions
 public type GetEventDefinitionsQueries record {
     # Filter event definitions by name substring
@@ -722,7 +812,27 @@ public type SearchContactPreferencesQueries record {
     1|2 referenceType;
 };
 
+# Represents the Queries record for the operation: deleteAsset
+public type DeleteAssetQueries record {
+    # Permanently deletes the file and its URL in Akamai when the associated file is deleted in Content Builder. A value of 1 permanently deletes the file. If isCDNDelete is unspecified or if the value is 0, it doesn’t permanently delete the file
+    boolean isCDNDelete?;
+};
+
 public type ContactExitStatusResponse ContactExitStatus;
+
+# Response containing a collection of content categories
+public type CategoryList record {
+    # Total number of categories.
+    int count;
+    # Current page number.
+    int page;
+    # Number of items per page.
+    int pageSize;
+    # Navigation links.
+    record {} links;
+    # List of content categories.
+    Category[] items;
+};
 
 # Represents a set of attributes for a contact
 public type AttributeSet record {
@@ -770,6 +880,25 @@ public type EventDefinitionSchedule record {
     "First"|"Second"|"Third"|"Fourth"|"Last" ScheduledWeek?;
 };
 
+# Represents the Queries record for the operation: getAssets
+public type GetAssetsQueries record {
+    # Filter by an asset's property using a simple operator and value
+    @http:Query {name: "$filter"}
+    string filter?;
+    # Determines which asset property to use for sorting, and also determines the direction in which to sort the data. If you don't provide the $orderBy parameter, the results are sorted by asset ID in ascending order
+    @http:Query {name: "$orderBy"}
+    string orderBy?;
+    # Comma-delimited string of asset properties used to reduce the size of your results to only the properties you need
+    @http:Query {name: "$fields"}
+    string fields?;
+    # The page number of results to retrieve. The default value is 1
+    @http:Query {name: "$page"}
+    int page = 1;
+    # The number of items to return on a page of results. The default and maximum value is 50
+    @http:Query {name: "$pageSize"}
+    int pageSize = 50;
+};
+
 # Request to search contact preferences
 public type SearchPreferencesRequest record {
     # Array of contact keys or IDs to search for preferences
@@ -797,6 +926,22 @@ public type ContactMembershipDetail record {
     string contactKey?;
     string definitionKey?;
     int version?;
+};
+
+# Represents a content category in Salesforce Marketing Cloud
+public type CreateCategory record {
+    # Name of the category.
+    string name;
+    # ID of the parent category.
+    decimal parentId;
+    # The type of category, either asset or asset-shared.
+    string categoryType?;
+    # ID of the member who creates the category.
+    decimal memberId?;
+    # ID of the enterprise this business unit belongs to.
+    decimal enterpriseId?;
+    # Stores the MIDs of business units this category is shared with and the sharing type. Only included in the response if CategoryType is asset-shared.
+    record {} sharingProperties?;
 };
 
 public type ContactMembershipResponse record {
