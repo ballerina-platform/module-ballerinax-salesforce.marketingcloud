@@ -117,3 +117,17 @@ public function getCampaigns() returns error? {
     CampaignList response = check mcClient->getCampaigns();
     test:assertNotEquals(response.items, [], msg = "Expected non-empty campaigns list, but got empty list");
 }
+
+@test:Config {
+}
+public function getAssets() returns error? {
+    AssetList response = check mcClient->getAssets();
+    test:assertNotEquals(response.items, [], msg = "Expected non-empty events list, but got empty list");
+}
+
+@test:Config {
+}
+public function getCategories() returns error? {
+    CategoryList response = check mcClient->getCategories();
+    test:assertNotEquals(response.items, [], msg = "Expected non-empty events list, but got empty list");
+}
