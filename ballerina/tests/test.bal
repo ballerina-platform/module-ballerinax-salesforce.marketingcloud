@@ -131,3 +131,10 @@ public function getCategories() returns error? {
     CategoryList response = check mcClient->getCategories();
     test:assertNotEquals(response.items, [], msg = "Expected non-empty events list, but got empty list");
 }
+
+@test:Config {
+}
+public function getEmailDefinitions() returns error? {
+    EmailDefinitionList response = check mcClient->getEmailDefinitions();
+    test:assertNotEquals(response.definitions, [], msg = "Expected non-empty email definitions list, but got empty list");
+}
