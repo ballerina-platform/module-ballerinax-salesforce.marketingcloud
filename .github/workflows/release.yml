@@ -14,3 +14,5 @@ jobs:
     with:
       package-name: salesforce.marketingcloud
       package-org: ballerinax
+      additional-release-flags: -x test
+      additional-publish-flags: -x test
