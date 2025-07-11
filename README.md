@@ -1,4 +1,4 @@
-# Ballerina Salesforce Marketing Cloud Library
+# Ballerina Salesforce Marketing Cloud library
 
 [![Build](https://github.com/ballerina-platform/module-ballerinax-salesforce.marketingcloud/actions/workflows/ci.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerinax-salesforce.marketingcloud/actions/workflows/ci.yml)
 [![GitHub Last Commit](https://img.shields.io/github/last-commit/ballerina-platform/module-ballerinax-salesforce.marketingcloud.svg)](https://github.com/ballerina-platform/module-ballerinax-salesforce.marketingcloud/commits/master)
