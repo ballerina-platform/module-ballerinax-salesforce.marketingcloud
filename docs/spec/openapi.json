@@ -1,0 +1,1780 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "Salesforce Marketing Cloud APIs",
+    "description" : "Salesforce Marketing Cloud APIs provide programmatic access to features such as Address, Assets (Content Builder), Audit, Contacts, Data Events, Event Notification, Interactions (Journey Builder), Push, SMS, Transactional Messaging, and Messaging. Refer to the official Salesforce documentation for detailed API usage and guidelines.",
+    "version" : "1.0.0"
+  },
+  "servers" : [ {
+    "url" : "https://{{et_subdomain}}.rest.marketingcloudapis.com"
+  } ],
+  "security" : [ {
+    "OAuth2ClientCredentials" : [ ]
+  } ],
+  "tags" : [ {
+    "name" : "Messaging & Journeys"
+  }, {
+    "name" : "Messaging & Journeys > REST"
+  }, {
+    "name" : "Messaging & Journeys > REST > Auth"
+  }, {
+    "name" : "Messaging & Journeys > REST > Address"
+  }, {
+    "name" : "Messaging & Journeys > REST > Assets (Content Builder)",
+    "description" : "https://developer.salesforce.com/docs/atlas.en-us.mc-apis.meta/mc-apis/content-api.htm"
+  }, {
+    "name" : "Messaging & Journeys > REST > Assets (Content Builder) > Categories (Folders)"
+  }, {
+    "name" : "Messaging & Journeys > REST > Assets (Content Builder) > Query"
+  }, {
+    "name" : "Messaging & Journeys > REST > Assets (Content Builder) > Content"
+  }, {
+    "name" : "Messaging & Journeys > REST > Audit"
+  }, {
+    "name" : "Messaging & Journeys > REST > Contacts"
+  }, {
+    "name" : "Messaging & Journeys > REST > Data Events"
+  }, {
+    "name" : "Messaging & Journeys > REST > Data Events > Asynchronous"
+  }, {
+    "name" : "Messaging & Journeys > REST > Data Events > Synchronous"
+  }, {
+    "name" : "Messaging & Journeys > REST > Event Notification"
+  }, {
+    "name" : "Messaging & Journeys > REST > Event Notification > Callback"
+  }, {
+    "name" : "Messaging & Journeys > REST > Event Notification > Subscriptions"
+  }, {
+    "name" : "Messaging & Journeys > REST > Interactions (Journey Builder)"
+  }, {
+    "name" : "Messaging & Journeys > REST > Interactions (Journey Builder) > Event Definitions"
+  }, {
+    "name" : "Messaging & Journeys > REST > Interactions (Journey Builder) > Journeys"
+  }, {
+    "name" : "Messaging & Journeys > REST > Push"
+  }, {
+    "name" : "Messaging & Journeys > REST > Push > Location"
+  }, {
+    "name" : "Messaging & Journeys > REST > SMS"
+  }, {
+    "name" : "Messaging & Journeys > REST > Transactional Messaging"
+  }, {
+    "name" : "Messaging & Journeys > REST > Transactional Messaging > Email"
+  }, {
+    "name" : "Messaging & Journeys > REST > Transactional Messaging > SMS"
+  }, {
+    "name" : "Messaging & Journeys > REST > Messaging"
+  }, {
+    "name" : "Messaging & Journeys > REST > Data",
+    "description" : "[https://help.salesforce.com/s/articleView?id=sf.mc_rn_2024_spring_as_single_use_de_import.htm&amp;type=5](https://help.salesforce.com/s/articleView?id=sf.mc_rn_2024_spring_as_single_use_de_import.htm&type=5)\n\n# **Data Extension Imports**\n\nYou can use the Data Extension Import APIs to import data from various file transfer locations to a data extension, without creating an import definition.\n\nYou can import from pre-signed file sources such as, Amazon Web Service (AWS) and Microsoft Azure without configuring file transfer locations."
+  } ],
+  "paths" : {
+    "/interaction/v1/eventDefinitions" : {
+      "get" : {
+        "tags" : [ "Messaging & Journeys > REST > Interactions (Journey Builder) > Event Definitions" ],
+        "summary" : "Get Event Definitions",
+        "description" : "Retrieves a collection of event definitions.",
+        "operationId" : "getEventDefinitions",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/page"
+        }, {
+          "$ref" : "#/components/parameters/pageSize"
+        }, {
+          "name" : "name",
+          "in" : "query",
+          "description" : "Filter event definitions by name substring",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of event definitions",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EventDefinitionList"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Messaging & Journeys > REST > Interactions (Journey Builder) > Event Definitions" ],
+        "summary" : "Create Event Definition",
+        "description" : "Creates an event definition (name and data schema for an event) and defines an event definition key. The resource uses this key when firing an event to send it to the appropriate journey. Typically, marketers create the event definition in the Journey Builder UI. Use this resource instead if you are using a custom application for Journey Builder functionality.",
+        "operationId" : "createEventDefinition",
+        "requestBody" : {
+          "description" : "Payload to be sent with the request",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/EventDefinition"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Event Definition created successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EventDefinition"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/interaction/v1/eventDefinitions/key:{eventDefinitionKey}" : {
+      "get" : {
+        "tags" : [ "Messaging & Journeys > REST > Interactions (Journey Builder) > Event Definitions" ],
+        "summary" : "Get Event Definitions - By Key",
+        "description" : "Retrieves an individual event definition by key.",
+        "operationId" : "getEventDefinitionByKey",
+        "parameters" : [ {
+          "name" : "eventDefinitionKey",
+          "in" : "path",
+          "description" : "Key of the event definition",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Event definition details",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EventDefinition"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Messaging & Journeys > REST > Interactions (Journey Builder) > Event Definitions" ],
+        "summary" : "Update Event Definition - By Key",
+        "description" : "Updates an event definition by key. Once an event definition is created, only a few properties can be updated.",
+        "operationId" : "updateEventDefinitionByKey",
+        "parameters" : [ {
+          "name" : "eventDefinitionKey",
+          "in" : "path",
+          "description" : "Key of the event definition",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Payload to be sent with the request",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/EventDefinition"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EventDefinition"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Messaging & Journeys > REST > Interactions (Journey Builder) > Event Definitions" ],
+        "summary" : "Delete Event Definition - By Key",
+        "description" : "Deletes an individual event definition by key.",
+        "operationId" : "deleteEventDefinitionByKey",
+        "parameters" : [ {
+          "name" : "eventDefinitionKey",
+          "in" : "path",
+          "description" : "Key of the event definition",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : { }
+            }
+          }
+        }
+      }
+    },
+    "/interaction/v1/eventDefinitions/{eventDefinitionId}" : {
+      "put" : {
+        "tags" : [ "Messaging & Journeys > REST > Interactions (Journey Builder) > Event Definitions" ],
+        "summary" : "Update Event Definition - By ID",
+        "description" : "Updates an event definition by ID. Once an event definition is created, only a few properties can be updated.",
+        "operationId" : "updateEventDefinitionById",
+        "parameters" : [ {
+          "name" : "eventDefinitionId",
+          "in" : "path",
+          "description" : "ID of the event definition",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Payload to be sent with the request",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/EventDefinition"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EventDefinition"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Messaging & Journeys > REST > Interactions (Journey Builder) > Event Definitions" ],
+        "summary" : "Delete Event Definition - By ID",
+        "description" : "Deletes an individual event definition by ID.",
+        "operationId" : "deleteEventDefinitionById",
+        "parameters" : [ {
+          "name" : "eventDefinitionId",
+          "in" : "path",
+          "description" : "ID of the event definition",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : { }
+            }
+          }
+        }
+      }
+    },
+    "/interaction/v1/events" : {
+      "post" : {
+        "tags" : [ "Messaging & Journeys > REST > Interactions (Journey Builder)" ],
+        "summary" : "Fire Entry Event",
+        "description" : "Fires the entry event that initiates the journey.",
+        "operationId" : "fireEntryEvent",
+        "requestBody" : {
+          "description" : "Payload to be sent with the request",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/FireEvent"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FireEventResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/interaction/v1/interactions" : {
+      "get" : {
+        "tags" : [ "Messaging & Journeys > REST > Interactions (Journey Builder) > Journeys" ],
+        "summary" : "Get Interactions (Journeys)",
+        "description" : "Retrieves a collection of all journeys. The journey collection resources are embedded in the items property of the response body. Use both a sort order and paging to minimize the response size and response time.",
+        "operationId" : "getJourneys",
+        "parameters" : [ {
+          "name" : "$orderBy",
+          "in" : "query",
+          "description" : "The field and sort method to use to sort the results. You can sort on these fields: ModifiedDate, Name, Performance. You can sort these fields in ascending (ASC) or descending (DESC) order. The default value is modifiedDate DESC",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "ModifiedDate DESC"
+          },
+          "x-ballerina-name" : "orderBy"
+        }, {
+          "$ref" : "#/components/parameters/page"
+        }, {
+          "$ref" : "#/components/parameters/pageSize"
+        }, {
+          "name" : "definitionType",
+          "in" : "query",
+          "description" : "The type of definition to retrieve. The only accepted value is transactional, which retrieves all transactional send definitions",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "transactional" ]
+          }
+        }, {
+          "$ref" : "#/components/parameters/extras"
+        }, {
+          "name" : "mostRecentVersionOnly",
+          "in" : "query",
+          "description" : "Use this parameter to specify whether to return the most recent version of each journey that matches the filter criteria. The default value is true",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "boolean",
+            "default" : true
+          }
+        }, {
+          "name" : "nameOrDescription",
+          "in" : "query",
+          "description" : "A search string to apply to the request. The API searches the name and description of each journey for this string, and returns all matching journeys",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "specificApiVersionNumber",
+          "in" : "query",
+          "description" : "The version number of the workflowApiVersion value to retrieve. The default value is 1",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "number",
+            "default" : 1
+          }
+        }, {
+          "name" : "status",
+          "in" : "query",
+          "description" : "A journey status value to use to filter the results. Possible values are: Deleted, Draft, Published, ScheduledToPublish, Stopped, Unpublished. The ScheduledToSend, Sent, and Stopped statuses exist only in single-send journeys. If you don't specify a status value, the API returns all journeys regardless of their statuses",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/JourneyStatus"
+          }
+        }, {
+          "name" : "tag",
+          "in" : "query",
+          "description" : "A tag to use to filter the results. When you specify this parameter, the API returns only journeys with the specified tag",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "versionNumber",
+          "in" : "query",
+          "description" : "The version number of the journey to retrieve. The default value is the currently published version or the latest version number that meets the other search criteria",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JourneysList"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "summary" : "Update an existing Journey version",
+        "operationId" : "updateJourney",
+        "requestBody" : {
+          "description" : "Request body for updating an existing journey",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateJourney"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Journey updated successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Journey"
+                }
+              }
+            }
+          },
+          "304" : {
+            "description" : "No changes detected; request data matches server",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/NoChangeResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Messaging & Journeys > REST > Interactions (Journey Builder) > Journeys" ],
+        "summary" : "Create Interaction (Journey) - Simple Journey",
+        "description" : "Creates or saves a journey. To create a new journey provide the request body in the appropriate Journey Specification. Please read the Journey Spec page to understand which properties are required to create a journey via the API. The id, key, createdDate, modifiedDate, status and definitionId are assigned by Journey Builder and are never to be passed in as parameters for creating a journey.",
+        "operationId" : "createJourney",
+        "requestBody" : {
+          "description" : "Request body for creating a new journey",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Journey"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Journey"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/interaction/v1/interactions/contactMembership" : {
+      "post" : {
+        "tags" : [ "Messaging & Journeys > REST > Interactions (Journey Builder)" ],
+        "summary" : "Get List Of Journeys Contact Is In",
+        "description" : "Provides a list of journeys and journey versions for a list of contact keys.",
+        "operationId" : "getContactMembership",
+        "requestBody" : {
+          "description" : "Payload to be sent with the request",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ContactMembershipRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful response with contact list memberships",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ContactMembershipResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/interaction/v1/interactions/contactexit" : {
+      "post" : {
+        "tags" : [ "Messaging & Journeys > REST > Interactions (Journey Builder)" ],
+        "summary" : "Remove Contact From Journey",
+        "description" : "Removes up to 50 contacts from a journey or from one or more versions of a journey.",
+        "operationId" : "removeContactFromJourney",
+        "requestBody" : {
+          "description" : "Payload to be sent with the request",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ContactExitRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "202" : {
+            "description" : "Accepted – contact exit request successfully received",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ContactExitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/interaction/v1/interactions/contactexit/status" : {
+      "post" : {
+        "tags" : [ "Messaging & Journeys > REST > Interactions (Journey Builder)" ],
+        "summary" : "Get Contact Journey Exit Status",
+        "description" : "Returns the status of a request to remove a contact from a journey or from one or more versions of a journey.",
+        "operationId" : "getContactExitStatus",
+        "requestBody" : {
+          "description" : "Payload to be sent with the request",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ContactExitRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Status of contact removal returned successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ContactExitStatusResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/interaction/v1/interactions/{journeyId}" : {
+      "get" : {
+        "tags" : [ "Messaging & Journeys > REST > Interactions (Journey Builder) > Journeys" ],
+        "summary" : "Get Interactions (Journeys) - By ID",
+        "description" : "Retrieves a single journey by ID.",
+        "operationId" : "getJourneyById",
+        "parameters" : [ {
+          "name" : "journeyId",
+          "in" : "path",
+          "description" : "ID of version 1 of the journey in the form of a GUID (UUID)",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "versionNumber",
+          "in" : "query",
+          "description" : "Version number of the journey to retrieve. If not provided, the latest version is returned",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "extras",
+          "in" : "query",
+          "description" : "A list of additional data to fetch. Available values are: all, activities, outcomes, and stats. Default is ''",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/Extras"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Journey"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "summary" : "Update an existing Journey version",
+        "operationId" : "updateJourneyById",
+        "parameters" : [ {
+          "name" : "journeyId",
+          "in" : "path",
+          "description" : "ID of the journey in the form of a GUID (UUID)",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Request body for updating an existing journey",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateJourney"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Journey updated successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Journey"
+                }
+              }
+            }
+          },
+          "304" : {
+            "description" : "No changes detected; request data matches server",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/NoChangeResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Messaging & Journeys > REST > Interactions (Journey Builder) > Journeys" ],
+        "summary" : "Delete Interaction (Journey) - By ID",
+        "description" : "Deletes a journey by ID. When deleting last version of a journey, check if the journey is associated with a tag and unassociated the tag using the deleteTags resource.",
+        "operationId" : "deleteJourneyById",
+        "parameters" : [ {
+          "name" : "journeyId",
+          "in" : "path",
+          "description" : "ID of the journey in the form of a GUID (UUID). The ID deletes all versions of the journey, unless a versionNumber is provided",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "versionNumber",
+          "in" : "query",
+          "description" : "Version number of the journey to delete. If no version is specified, ALL versions associated with the provided ID will be deleted",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : { }
+            }
+          }
+        }
+      }
+    },
+    "/interaction/v1/interactions/key:{key}" : {
+      "get" : {
+        "tags" : [ "Messaging & Journeys > REST > Interactions (Journey Builder) > Journeys" ],
+        "summary" : "Get Interactions (Journeys) - By Key",
+        "description" : "Retrieves a single journey by Key.",
+        "operationId" : "getJourneyByKey",
+        "parameters" : [ {
+          "name" : "key",
+          "in" : "path",
+          "description" : "The key of the journey",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "versionNumber",
+          "in" : "query",
+          "description" : "Version number of the journey to retrieve. If not provided, the latest version is returned",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "extras",
+          "in" : "query",
+          "description" : "A list of additional data to fetch. Available values are: all, activities, outcomes, and stats. Default is ''",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/Extras"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Journey"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "summary" : "Update existing Journey version",
+        "operationId" : "updateJourneyByKey",
+        "parameters" : [ {
+          "name" : "key",
+          "in" : "path",
+          "description" : "The key of the journey",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Request body for updating an existing journey",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateJourney"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Journey updated successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Journey"
+                }
+              }
+            }
+          },
+          "304" : {
+            "description" : "No changes detected; request data matches server",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/NoChangeResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Messaging & Journeys > REST > Interactions (Journey Builder) > Journeys" ],
+        "summary" : "Delete Interaction (Journey) - By Key",
+        "description" : "Deletes a journey by Key. When deleting last version of a journey, check if the journey is associated with a tag and unassociated the tag using the deleteTags resource.",
+        "operationId" : "deleteJourneyByKey",
+        "parameters" : [ {
+          "name" : "key",
+          "in" : "path",
+          "description" : "Key of the journey. The Key deletes all versions of the journey, unless a versionNumber is provided",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "versionNumber",
+          "in" : "query",
+          "description" : "Version number of the journey to delete. If no version is specified, ALL versions associated with the provided ID will be deleted",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : { }
+            }
+          }
+        }
+      }
+    },
+    "/address/v1/validateEmail" : {
+      "post" : {
+        "tags" : [ "Messaging & Journeys > REST > Address" ],
+        "summary" : "Validate Address",
+        "description" : "Validates an email by specifying the email address and validators to be used in the request body of the HTTP POST. You can use more than one validator in the same call.",
+        "operationId" : "validateEmail",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ValidateEmailRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ValidateEmailResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hub/v1/dataevents/key:{dEExternalKey}/rowset" : {
+      "post" : {
+        "tags" : [ "Messaging & Journeys > REST > Data Events > Synchronous" ],
+        "summary" : "Upsert Row Set - DE Key",
+        "description" : "The API upserts multiple data extension rows in a single synchronous call using Data Extension's External Key.",
+        "operationId" : "upsertDERowSetByKey",
+        "parameters" : [ {
+          "name" : "dEExternalKey",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DataExtensionRowSet"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DataExtensionRowSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "EventDefinitionList" : {
+        "type" : "object",
+        "properties" : {
+          "pageSize" : {
+            "type" : "integer"
+          },
+          "page" : {
+            "type" : "integer"
+          },
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/EventDefinition"
+            }
+          }
+        }
+      },
+      "ValidateEmailResponse" : {
+        "type" : "object",
+        "properties" : {
+          "valid" : {
+            "type" : "boolean",
+            "description" : "Indicates whether the email address is valid"
+          },
+          "failedValidation" : {
+            "type" : "string",
+            "description" : "The validator that failed, if any"
+          },
+          "email" : {
+            "type" : "string",
+            "description" : "The email address that was validated"
+          }
+        },
+        "example" : {
+          "email" : "help@example.com",
+          "valid" : false,
+          "failedValidation" : "ListDetectiveValidator"
+        }
+      },
+      "JourneysList" : {
+        "required" : [ "count", "items", "page", "pageSize" ],
+        "type" : "object",
+        "properties" : {
+          "count" : {
+            "type" : "integer",
+            "description" : "Total number of journeys returned in this page"
+          },
+          "items" : {
+            "type" : "array",
+            "description" : "Array of journey definitions",
+            "items" : {
+              "$ref" : "#/components/schemas/Journey"
+            }
+          },
+          "page" : {
+            "type" : "integer",
+            "description" : "Current page number"
+          },
+          "pageSize" : {
+            "type" : "integer",
+            "description" : "Total number of available pages"
+          }
+        },
+        "additionalProperties" : true,
+        "description" : "Response containing a collection of journeys"
+      },
+      "DataExtensionRow" : {
+        "required" : [ "keys", "values" ],
+        "type" : "object",
+        "properties" : {
+          "keys" : {
+            "type" : "object",
+            "description" : "A map of key fields for the data extension row. The property names and types are arbitrary and depend on the data extension definition"
+          },
+          "values" : {
+            "type" : "object",
+            "description" : "A map of value fields for the data extension row. The property names and types are arbitrary and depend on the data extension definition"
+          }
+        },
+        "example" : {
+          "keys" : {
+            "SubscriberKey" : "5c68f5c7f230288ba735091"
+          },
+          "values" : {
+            "FirstName" : "John",
+            "FollowerCount" : 2,
+            "IsActive" : true,
+            "LastLogin" : "2018-05-23T14:32:00Z",
+            "LastName" : "Smith"
+          }
+        }
+      },
+      "ValidateEmailRequest" : {
+        "required" : [ "email", "validators" ],
+        "type" : "object",
+        "properties" : {
+          "validators" : {
+            "type" : "array",
+            "description" : "List of validators to apply to the email address",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "SyntaxValidator", "MXValidator", "ListDetectiveValidator" ]
+            }
+          },
+          "email" : {
+            "type" : "string",
+            "description" : "Email address to validate"
+          }
+        },
+        "example" : {
+          "email" : "help@example.com",
+          "validators" : [ "SyntaxValidator", "MXValidator", "ListDetectiveValidator" ]
+        }
+      },
+      "FireEventResponse" : {
+        "type" : "object",
+        "properties" : {
+          "eventInstanceId" : {
+            "type" : "string",
+            "description" : "Unique ID for the fired event instance",
+            "format" : "uuid"
+          }
+        },
+        "additionalProperties" : true
+      },
+      "Activity" : {
+        "required" : [ "key", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "The unique ID for the activity."
+          },
+          "key" : {
+            "type" : "string",
+            "description" : "The unique customer key for the activity."
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "The display name for this activity."
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Defines the activity type. The expected input for each activity must be passed as an argument to operate correctly."
+          },
+          "outcomes" : {
+            "type" : "array",
+            "description" : "An array of outcome objects.",
+            "items" : {
+              "$ref" : "#/components/schemas/ActivityOutcomes"
+            }
+          },
+          "arguments" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "An object that represents the arguments that the activity expects to be passed at runtime. Each activity type requires a different set of parameters."
+          },
+          "configurationArguments" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "An object that represents the arguments that the activity expects to be passed at publish and runtime. Each activity type requires a different set of parameters."
+          }
+        },
+        "additionalProperties" : true,
+        "description" : "Represents a single activity in a journey"
+      },
+      "ContactMembershipRequest" : {
+        "required" : [ "ContactKey" ],
+        "type" : "object",
+        "properties" : {
+          "ContactKeyList" : {
+            "type" : "array",
+            "description" : "The list of unique keys that identify the contacts",
+            "items" : {
+              "type" : "string"
+            },
+            "x-ballerina-name" : "contactKeyList"
+          }
+        },
+        "example" : {
+          "ContactKeyList" : [ "DD301", "0036A000002FDbFQAW" ]
+        }
+      },
+      "Extras" : {
+        "type" : "string",
+        "description" : "Extras to include. Values:\n- all: Fetch all extras\n- activities: Include journey activities\n- outcomes: Include journey outcomes\n- stats: Include journey statistics\n- '': No extras (default)",
+        "enum" : [ "all", "activities", "outcomes", "stats", "" ]
+      },
+      "EventDefinition" : {
+        "required" : [ "eventDefinitionKey", "name", "type" ],
+        "type" : "object",
+        "properties" : {
+          "schema" : {
+            "type" : "object",
+            "description" : " Schema information for an event. The call uses this information to create a data extension associated with the Event Definition. Only required when not providing a dataExtensionId value"
+          },
+          "sourceApplicationExtensionId" : {
+            "type" : "string",
+            "description" : "A link to the application extension that defines the configuration screens for this type. Journey Builder uses this ID to filter shared entry sources. For example, for the Event Definition to be visible in the Existing Entry sources panel in the UI, this field must be populated. To obtain this value, perform a GET eventDefinition on similar events in Journey Builder"
+          },
+          "isVisibleInPicker" : {
+            "type" : "boolean",
+            "description" : "If true, makes this event visible in the Journey Builder Event Picker UI"
+          },
+          "configuration" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "Optional configuration data for the event definition. Can include additional settings or parameters"
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Optional description for the event definition, visible in UI"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Type of the event definition (e.g., 'RestEvent')",
+            "enum" : [ "Event", "ContactEvent", "DateEvent", "RestEvent" ]
+          },
+          "dataExtensionId" : {
+            "type" : "string",
+            "description" : "ID of the Data Extension used as the data source for the event. Optional if 'schema' is provided inline"
+          },
+          "eventDefinitionKey" : {
+            "type" : "string",
+            "description" : "Unique customer key for the event definition. Used to reference this event in API calls and journeys"
+          },
+          "mode" : {
+            "type" : "string",
+            "description" : "Operation mode of the event definition. Can be 'Production' or 'Test'",
+            "enum" : [ "Production", "Test" ]
+          },
+          "schedule" : {
+            "$ref" : "#/components/schemas/EventDefinitionSchedule"
+          },
+          "metaData" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "Optional metadata for the event definition. Can include additional information or settings"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Display name for the event definition. Visible in Journey Builder UI"
+          }
+        }
+      },
+      "UpdateJourney" : {
+        "required" : [ "key", "modifiedDate", "name", "version", "workflowApiVersion" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Journey UUID (optional if key is provided)"
+          },
+          "key" : {
+            "type" : "string",
+            "description" : "Customer-defined journey key"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Journey display name"
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Journey description (optional)"
+          },
+          "version" : {
+            "type" : "integer",
+            "description" : "Version number to update"
+          },
+          "workflowApiVersion" : {
+            "type" : "number",
+            "description" : "Journey spec version (0.5 or 1.0)",
+            "format" : "float"
+          },
+          "modifiedDate" : {
+            "type" : "string",
+            "description" : "Current modifiedDate, required to prevent concurrent writes",
+            "format" : "date-time"
+          },
+          "entryMode" : {
+            "type" : "string",
+            "description" : "Entry mode (e.g., APIEvent, Scheduled)"
+          },
+          "entryEvent" : {
+            "$ref" : "#/components/schemas/EventDefinition"
+          },
+          "goals" : {
+            "type" : "array",
+            "description" : "Goals that define journey completion or exit criteria",
+            "items" : {
+              "$ref" : "#/components/schemas/Goal"
+            }
+          },
+          "activities" : {
+            "type" : "array",
+            "description" : "Activities that define the steps in the journey",
+            "items" : {
+              "$ref" : "#/components/schemas/Activity"
+            }
+          }
+        },
+        "additionalProperties" : true,
+        "description" : "Request body for updating an existing journey"
+      },
+      "ActivityOutcomes" : {
+        "required" : [ "key", "next" ],
+        "type" : "object",
+        "properties" : {
+          "key" : {
+            "type" : "string",
+            "description" : "The unique customer key for the outcome."
+          },
+          "next" : {
+            "type" : "string",
+            "description" : "A string that maps to a valid journey activity key."
+          }
+        },
+        "additionalProperties" : true
+      },
+      "FireEvent" : {
+        "required" : [ "ContactKey", "EventDefinitionKey" ],
+        "type" : "object",
+        "properties" : {
+          "EventDefinitionKey" : {
+            "type" : "string",
+            "description" : "Key of the entry event defined in Journey Builder",
+            "x-ballerina-name" : "eventDefinitionKey"
+          },
+          "ContactKey" : {
+            "type" : "string",
+            "description" : "Unique identifier for the contact",
+            "x-ballerina-name" : "contactKey"
+          },
+          "Data" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "Additional attributes required by the entry event schema",
+            "x-ballerina-name" : "data"
+          }
+        },
+        "example" : {
+          "ContactKey" : "DD301",
+          "Data" : {
+            "Email" : "aaron.cates@salesforce.com",
+            "First_Name" : "Aaron",
+            "Last_Name" : "Cates",
+            "SubscriberKey" : "DD301"
+          },
+          "EventDefinitionKey" : "APIEvent-0dbe46de-74f9-a309-7778-298c0a565f93"
+        }
+      },
+      "JourneyStatus" : {
+        "type" : "string",
+        "description" : "A journey status value to use to filter the results. The ScheduledToSend, Sent, and Stopped statuses exist only in single-send journeys. If you don't specify a status value, the API returns all journeys regardless of their statuses",
+        "enum" : [ "Deleted", "Draft", "Published", "ScheduledToPublish", "Stopped", "Unpublished", "ScheduledToSend", "Sent" ]
+      },
+      "Goal" : {
+        "required" : [ "key", "name" ],
+        "type" : "object",
+        "properties" : {
+          "key" : {
+            "type" : "string",
+            "description" : "The customer key for this goal."
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "The display name for this goal."
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "The type of goal this is (only option currently is ContactEvent).",
+            "enum" : [ "ContactEvent" ]
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "The description for this goal, will be displayed in the Journey Builder user interface."
+          },
+          "metaData" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "A set of properties which are not specific to the definition or execution of this Event, but are related to it."
+          },
+          "conversionUnit" : {
+            "type" : "string",
+            "description" : "This value is used for deterministic evaluations of the goal, can be either 'percentage' or 'wholenumber'.",
+            "enum" : [ "percentage", "wholenumber" ]
+          },
+          "conversionValue" : {
+            "type" : "number",
+            "description" : "Based on the conversionUnit this is the metric Journey Builder uses to determine if the goal has been satisfied."
+          }
+        },
+        "additionalProperties" : true,
+        "description" : "Represents a goal in a journey"
+      },
+      "ContactMembership" : {
+        "type" : "object",
+        "properties" : {
+          "contactMemberships" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ContactMembershipDetail"
+            }
+          },
+          "contactsNotFound" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "NoChangeResponse" : {
+        "required" : [ "documentation", "errorcode", "message" ],
+        "type" : "object",
+        "properties" : {
+          "documentation" : {
+            "type" : "string",
+            "example" : ""
+          },
+          "message" : {
+            "type" : "string",
+            "example" : "No change has been processed, supplied data matches that on the server."
+          },
+          "errorcode" : {
+            "type" : "integer",
+            "example" : 304
+          }
+        },
+        "description" : "Response indicating no changes were made"
+      },
+      "ContactExitResponse" : {
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ContactExitStatus"
+            }
+          }
+        },
+        "additionalProperties" : true
+      },
+      "ContactExitRequest" : {
+        "required" : [ "ContactKey", "DefinitionKey" ],
+        "type" : "object",
+        "properties" : {
+          "Versions" : {
+            "type" : "array",
+            "description" : "List of version numbers of the journey to remove contact from",
+            "items" : {
+              "type" : "integer"
+            },
+            "x-ballerina-name" : "versions"
+          },
+          "ContactKey" : {
+            "type" : "string",
+            "description" : "ID that uniquely identifies a subscriber or contact. Can be a single contact or an array of up to 50",
+            "x-ballerina-name" : "contactKey"
+          },
+          "DefinitionKey" : {
+            "type" : "string",
+            "description" : "Customer Key that uniquely identifies the journey",
+            "x-ballerina-name" : "definitionKey"
+          }
+        },
+        "example" : [ {
+          "ContactKey" : "DD301",
+          "DefinitionKey" : "postman-demo1",
+          "Versions" : [ 2 ]
+        } ]
+      },
+      "ContactExitStatus" : {
+        "type" : "object",
+        "properties" : {
+          "contactKey" : {
+            "type" : "string"
+          },
+          "definitionKey" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ContactExitStatusDetail"
+            }
+          }
+        }
+      },
+      "DataExtensionRowSet" : {
+        "type" : "array",
+        "description" : "An array of data extension rows to be upserted",
+        "example" : [ {
+          "keys" : {
+            "SubscriberKey" : "5c68f5c7f230288ba735091"
+          },
+          "values" : {
+            "FirstName" : "John",
+            "FollowerCount" : 2,
+            "IsActive" : true,
+            "LastLogin" : "2018-05-23T14:32:00Z",
+            "LastName" : "Smith"
+          }
+        }, {
+          "keys" : {
+            "SubscriberKey" : "5c68f5c7f380288ba5091"
+          },
+          "values" : {
+            "FirstName" : "Jane",
+            "FollowerCount" : 2,
+            "IsActive" : true,
+            "LastLogin" : "2018-05-23T14:32:00Z",
+            "LastName" : "Smith"
+          }
+        } ],
+        "items" : {
+          "$ref" : "#/components/schemas/DataExtensionRow"
+        }
+      },
+      "ContactExitStatusDetail" : {
+        "type" : "object",
+        "properties" : {
+          "definitionInstanceId" : {
+            "type" : "string",
+            "description" : "The unique identifier for the journey instance from which the contact was removed"
+          },
+          "message" : {
+            "type" : "string",
+            "description" : "A message providing additional information about the exit operation"
+          },
+          "version" : {
+            "type" : "integer",
+            "description" : "The version of the journey from which the contact was removed"
+          }
+        }
+      },
+      "ContactExitStatusResponse" : {
+        "$ref" : "#/components/schemas/ContactExitStatus"
+      },
+      "Defaults" : {
+        "type" : "object",
+        "properties" : {
+          "email" : {
+            "type" : "array",
+            "description" : "An ordered list of email expressions used to determine which email address to use as the default.",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        },
+        "additionalProperties" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "description" : "An object that contains default values for the journey, such as email expressions. Example: { \"email\": [\"{{Event.event-key.EmailAddress}}\", \"{{Contact.Default.Email}}\"] }"
+      },
+      "EventDefinitionSchedule" : {
+        "required" : [ "EndType", "Frequency", "RecurrencePattern", "StartDateTime" ],
+        "type" : "object",
+        "properties" : {
+          "StartDateTime" : {
+            "type" : "string",
+            "description" : "The first time the scheduled automation should run.",
+            "format" : "date-time"
+          },
+          "EndDateTime" : {
+            "type" : "string",
+            "description" : "The last time the scheduled automation should run. Required if EndType = EndDate.",
+            "format" : "date-time"
+          },
+          "Occurrences" : {
+            "type" : "integer",
+            "description" : "How many times the scheduled automation should run. Required if EndType = Occurrences."
+          },
+          "EndType" : {
+            "type" : "string",
+            "description" : "EndDate or Occurrences, indicates if automation schedule should stop after a specified date or a specified number of runs.",
+            "enum" : [ "EndDate", "Occurrences" ]
+          },
+          "Frequency" : {
+            "type" : "string",
+            "description" : "Minutely, Hourly, Daily, Weekly, Monthly, Yearly",
+            "enum" : [ "Minutely", "Hourly", "Daily", "Weekly", "Monthly", "Yearly" ]
+          },
+          "RecurrencePattern" : {
+            "type" : "string",
+            "description" : "Interval - used by Minutely, Hourly, Daily; EveryWeekDay - used by Daily; ByDay - used by Weekly, Monthly, Yearly; ByWeek - used by Monthly, Yearly",
+            "enum" : [ "Interval", "EveryWeekDay", "ByDay", "ByWeek" ]
+          },
+          "Interval" : {
+            "type" : "integer",
+            "description" : "Used for Minutely, Hourly, Daily, Weekly, and Monthly schedules (not used for Yearly). Required if RecurrencePattern = Interval."
+          },
+          "Sunday" : {
+            "type" : "boolean",
+            "description" : "Only used for weekly schedules. May be null."
+          },
+          "Monday" : {
+            "type" : "boolean",
+            "description" : "Only used for weekly schedules. May be null."
+          },
+          "Tuesday" : {
+            "type" : "boolean",
+            "description" : "Only used for weekly schedules. May be null."
+          },
+          "Wednesday" : {
+            "type" : "boolean",
+            "description" : "Only used for weekly schedules. May be null."
+          },
+          "Thursday" : {
+            "type" : "boolean",
+            "description" : "Only used for weekly schedules. May be null."
+          },
+          "Friday" : {
+            "type" : "boolean",
+            "description" : "Only used for weekly schedules. May be null."
+          },
+          "Saturday" : {
+            "type" : "boolean",
+            "description" : "Only used for weekly schedules. May be null."
+          },
+          "ScheduledDay" : {
+            "type" : "integer",
+            "description" : "Day of month (1 to 31), used for Monthly and Yearly schedules."
+          },
+          "ScheduledDayOfWeek" : {
+            "type" : "string",
+            "description" : "Name of day of week (Sunday), used for Monthly and Yearly schedules."
+          },
+          "ScheduledWeek" : {
+            "type" : "string",
+            "description" : "First, Second, Third, Fourth, Last, used for Monthly and Yearly schedules.",
+            "enum" : [ "First", "Second", "Third", "Fourth", "Last" ]
+          }
+        },
+        "additionalProperties" : true,
+        "description" : "Optionally define a schedule for the event. Used to trigger the event on a recurring basis"
+      },
+      "ContactMembershipDetail" : {
+        "type" : "object",
+        "properties" : {
+          "contactKey" : {
+            "type" : "string"
+          },
+          "definitionKey" : {
+            "type" : "string"
+          },
+          "version" : {
+            "type" : "integer"
+          }
+        }
+      },
+      "Journey" : {
+        "required" : [ "key", "name", "workflowApiVersion" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "A unique identifier for this journey (read-only).",
+            "readOnly" : true
+          },
+          "version" : {
+            "type" : "integer",
+            "description" : "The iteration/version number of the journey (read-only).",
+            "readOnly" : true
+          },
+          "key" : {
+            "type" : "string",
+            "description" : "The customer-defined unique key for this journey."
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Display name of the journey in the UI."
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Human-readable explanation of the journey's purpose."
+          },
+          "workflowApiVersion" : {
+            "type" : "number",
+            "description" : "Version of the Journey Spec used."
+          },
+          "goals" : {
+            "maxItems" : 1,
+            "type" : "array",
+            "description" : "An array of goals containing a single object. Journeys only support one goal.",
+            "items" : {
+              "$ref" : "#/components/schemas/Goal"
+            }
+          },
+          "triggers" : {
+            "maxItems" : 1,
+            "type" : "array",
+            "description" : "An array of triggers containing a single object. Journeys only support one trigger.",
+            "items" : {
+              "$ref" : "#/components/schemas/EventDefinition"
+            }
+          },
+          "defaults" : {
+            "$ref" : "#/components/schemas/Defaults"
+          },
+          "activities" : {
+            "type" : "array",
+            "description" : "An array that includes all the activities of the journey.",
+            "items" : {
+              "$ref" : "#/components/schemas/Activity"
+            }
+          }
+        },
+        "additionalProperties" : true,
+        "description" : "Represents a complete journey definition",
+        "example" : {
+          "activities" : [ {
+            "arguments" : { },
+            "configurationArguments" : {
+              "applicationExtensionKey" : "jb-email-activity",
+              "triggeredSend" : {
+                "emailId" : 182582,
+                "emailSubject" : "Welcome to Makana",
+                "isMultipart" : true,
+                "isSalesforceTracking" : true,
+                "isSendLogging" : true,
+                "isTrackingClicks" : true,
+                "name" : "Makana Welcome Email",
+                "sendClassificationId" : "8da936da-9a40-e711-af11-78e3b50b7f0c",
+                "suppressTracking" : false
+              }
+            },
+            "description" : "",
+            "key" : "postman-email-key-1",
+            "metaData" : {
+              "isConfigured" : true
+            },
+            "name" : "Welcome Email",
+            "outcomes" : [ {
+              "arguments" : { },
+              "key" : "sent-email-now-wait",
+              "metaData" : { },
+              "next" : "welcome-email-then-wait"
+            } ],
+            "type" : "EMAILV2"
+          }, {
+            "configurationArguments" : {
+              "waitDuration" : 1,
+              "waitUnit" : "MINUTES"
+            },
+            "key" : "welcome-email-then-wait",
+            "metaData" : {
+              "isConfigured" : true,
+              "waitType" : "duration"
+            },
+            "name" : "1 minute",
+            "type" : "WAIT"
+          } ],
+          "defaults" : {
+            "email" : [ "{{Event.APIEvent-0dbe46de-74f9-a309-7778-298c0a565f93.\"Email\"}}" ]
+          },
+          "description" : "Api created Journey",
+          "entryMode" : "MultipleEntries",
+          "goals" : [ ],
+          "key" : "postman-demo",
+          "name" : "Postman Demo",
+          "triggers" : [ {
+            "arguments" : { },
+            "configurationArguments" : {
+              "criteria" : ""
+            },
+            "description" : "",
+            "key" : "TRIGGER",
+            "metaData" : {
+              "eventDefinitionId" : "e35aa03b-4a75-47e5-a855-92fa07dce953",
+              "eventDefinitionKey" : "APIEvent-0dbe46de-74f9-a309-7778-298c0a565f93"
+            },
+            "name" : "api-event",
+            "outcomes" : [ ],
+            "type" : "APIEvent"
+          } ],
+          "workflowApiVersion" : 1
+        }
+      },
+      "ContactMembershipResponse" : {
+        "type" : "object",
+        "properties" : {
+          "results" : {
+            "$ref" : "#/components/schemas/ContactMembership"
+          }
+        }
+      }
+    },
+    "parameters" : {
+      "page" : {
+        "name" : "$page",
+        "in" : "query",
+        "description" : "The page number of results to retrieve. The default value is 1",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "integer",
+          "default" : 1
+        },
+        "x-ballerina-name" : "page"
+      },
+      "pageSize" : {
+        "name" : "$pageSize",
+        "in" : "query",
+        "description" : "The number of items to return on a page of results. The default and maximum value is 50",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "maximum" : 50,
+          "type" : "integer",
+          "default" : 50
+        },
+        "x-ballerina-name" : "pageSize"
+      },
+      "extras" : {
+        "name" : "extras",
+        "in" : "query",
+        "description" : "Additional information to include in the response. When you specify the all value for this parameter, the response includes a large amount of data. The volume of this data has a negative impact on the performance of this query",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "$ref" : "#/components/schemas/Extras"
+        }
+      }
+    },
+    "securitySchemes" : {
+      "OAuth2ClientCredentials" : {
+        "type" : "oauth2",
+        "flows" : {
+          "clientCredentials" : {
+            "tokenUrl" : "https://{{et_subdomain}}.auth.marketingcloudapis.com/v2/token",
+            "scopes" : { }
+          }
+        }
+      }
+    }
+  }
+}
