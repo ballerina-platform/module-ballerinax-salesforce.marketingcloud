@@ -18,46 +18,46 @@ This guide explains how to generate an access token in Salesforce Marketing Clou
 
 1. Navigate to your [Salesforce Marketing Cloud login page](https://mc.exacttarget.com/cloud/login.html) and log in with your credentials.
 
-   <img src="docs/setup/resources/1-sfmc-login.png" title="SFMC login" width="50%" alt="SFMC login"/>
+    ![SFMC login](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-salesforce.marketingcloud/main/docs/setup/resources/1-sfmc-login.png)
 
 2. Once logged in, click on your username in the top right corner and select Setup from the dropdown menu.
 
-   <img src="docs/setup/resources/2-sfmc-setup.png" title="SFMC setup" width="50%" alt="SFMC setup"/>
+    ![SFMC setup](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-salesforce.marketingcloud/main/docs/setup/resources/2-sfmc-setup.png)
 
 ### Step 2: Create an installed package
 
 1. In the **Setup** menu, scroll down to the **Platform Tools** section.
 2. Click on **Apps** and then select **Installed Packages**.
 
-   <img src="docs/setup/resources/3-installed-packages.png" title="SFMC packages" width="50%" alt="SFMC installed packages"/>
+    ![SFMC installed packages](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-salesforce.marketingcloud/main/docs/setup/resources/3-installed-packages.png)
 
 3. Click the **New** button.
 4. Enter a **Name** and **Description** for your package (for example, `API Integration Package`).
 5. Click **Save**.
 
-   <img src="docs/setup/resources/4-sfmc-new-component.png" title="SFMC new component" width="50%" alt="SFMC installed package component"/>
+    ![SFMC installed package component](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-salesforce.marketingcloud/main/docs/setup/resources/4-sfmc-new-component.png)
 
 ### Step 3: Add an API integration component
 
 1. After saving, click on the package you just created to view its details.
 
-   <img src="docs/setup/resources/5-sfmc-component-details.png" title="SFMC new component details" width="95%" alt="SFMC installed package component details"/>
+    ![SFMC installed package component details](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-salesforce.marketingcloud/main/docs/setup/resources/5-sfmc-component-details.png)
 
 2. Click on **Add Component**.
 3. Choose **API Integration** as the component type.
 
-   <img src="docs/setup/resources/6-sfmc-component-type.png" title="SFMC new component type" width="50%" alt="SFMC installed package component type"/>
+    ![SFMC installed package component type](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-salesforce.marketingcloud/main/docs/setup/resources/6-sfmc-component-type.png)
 
 4. Select Server-to-Server as the integration type.
 
-   <img src="docs/setup/resources/7-sfmc-integration-type.png" title="SFMC new integration type" width="50%" alt="SFMC installed package integration type"/>
+    ![SFMC installed package integration type](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-salesforce.marketingcloud/main/docs/setup/resources/7-sfmc-integration-type.png)
 
 5. In the list of available scopes, check the required permissions for your integration. For most token generation and API calls, you might need:
    * Read and Write access to Email Studio
    * Access to the REST API
    * Any additional scopes based on your specific use case
 
-     <img src="docs/setup/resources/8-sfmc-scope.png" title="SFMC component scope" width="75%" alt="SFMC component scopes"/>
+    ![SFMC component scopes](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-salesforce.marketingcloud/main/docs/setup/resources/8-sfmc-scope.png)
 
 6. Click **Save** to add the component.
 
@@ -66,11 +66,11 @@ This guide explains how to generate an access token in Salesforce Marketing Clou
 On the package detail page, note down the Base URIs, Client ID and Client Secret generated for your integration. These credentials are required to authenticate API calls.
 If necessary, click on Edit to update any integration details or to add further scopes.
 
-<img src="docs/setup/resources/9-sfmc-secret.png" title="SFMC secret" width="65%" alt="SFMC client secret"/>
+![SFMC client secret](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-salesforce.marketingcloud/main/docs/setup/resources/9-sfmc-secret.png)
 
-<img src="docs/setup/resources/10-sfmc-client.png" title="SFMC client id" width="95%" alt="SFMC client id"/>
+![SFMC client id](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-salesforce.marketingcloud/main/docs/setup/resources/10-sfmc-client.png)
 
-### Step 5: Retrieve your user subdomain
+### Step 5: Retrieve your user subdomain 
 
 Extract the subdomain by taking the portion between `https://` and `.auth.marketingcloudapis.com` in your base URI. For example, from `https://mc123456gkz1x4p5b9m4gzx5b9.auth.marketingcloudapis.com/`, the subdomain is `mc123456gkz1x4p5b9m4gzx5b9`.
 
@@ -79,7 +79,7 @@ Extract the subdomain by taking the portion between `https://` and `.auth.market
 Navigate to the top right corner of your SFMC account interface, hover over your account name, and the MID will be displayed.
 >> **Note:** This is only needed if the cloud account has more than one business units.
 
-<img src="docs/setup/resources/11-account-id.png" title="Account id" width="50%" alt="SFMC client id"/>
+![Account id](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-salesforce.marketingcloud/main/docs/setup/resources/11-account-id.png)
 
 ## Quickstart
 
