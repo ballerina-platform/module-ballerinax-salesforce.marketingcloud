@@ -77,7 +77,7 @@ Extract the subdomain by taking the portion between `https://` and `.auth.market
 ### Step 6: Retrieve your account id if necessary
 
 Navigate to the top right corner of your SFMC account interface, hover over your account name, and the MID will be displayed.
->> **Note:** This is only needed if the cloud account has more than one bussiness units.
+>> **Note:** This is only needed if the cloud account has more than one business units.
 
 <img src="docs/setup/resources/11-account-id.png" title="Account id" width="50%" alt="SFMC client id"/>
 
