@@ -34,6 +34,8 @@ To add a new API to the specification and client:
 
 Use the following command to generate the Ballerina client from the OpenAPI specification. Run this from the repository root:
 
+>> *Note:* Since the API contains parameterized endpoints remote methods are generated.
+
 ```bash
 bal openapi -i docs/spec/openapi.json -o ballerina --mode client --client-methods remote --license docs/license.txt
 ```
