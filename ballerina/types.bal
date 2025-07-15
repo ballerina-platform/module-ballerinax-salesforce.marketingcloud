@@ -22,9 +22,13 @@ import ballerina/data.jsondata;
 import ballerina/http;
 import ballerina/oauth2;
 
+# List of event definitions
 public type EventDefinitionList record {
+    # Number of items per page
     int pageSize?;
+    # Current page number
     int page?;
+    # Array of event definitions
     EventDefinition[] items?;
 };
 
@@ -39,13 +43,85 @@ public type OAuth2ClientCredentialsGrantConfig record {|
     string accountId?;
 |};
 
-public type ValidateEmailResponse record {
-    # Indicates whether the email address is valid
-    boolean valid?;
-    # The validator that failed, if any
-    string failedValidation?;
-    # The email address that was validated
-    string email?;
+# Response for searching contact preferences
+public type SearchPreferencesResponse record {
+    # Date and time of the response
+    string responseDateTime;
+    # Number of rows returned
+    int rowsAffected;
+    # Service message ID for the response
+    string serviceMessageID;
+    # Service message ID for the request
+    string requestServiceMessageID;
+    # Array of messages about the request
+    record {}[] resultMessages;
+    # Array of contact preferences found
+    ContactPreferenceEntity[] items;
+};
+
+# List of email definitions
+public type EmailDefinitionList record {
+    # Unique identifier for the request
+    string requestId?;
+    # Number of items returned
+    int count;
+    # Number of items per page
+    int pageSize;
+    # Current page number
+    int page;
+    # List of email definitions
+    EmailDefinitionSummary[] definitions;
+};
+
+public type Address record {
+    # Type-value object specifying ContactID tied to given address
+    record {} contactID?;
+    # Type of the retrieved address: EMAIL: 1 MOBILE: 4 PUSH: 9 LINE: 10
+    int addressTypeID?;
+    # Type-value object specifying the AddressKey for retrieved address
+    record {} addressKey?;
+    # Last modified date value of retrieved address
+    string modifiedDate?;
+    # Type-value object specifying ContactKey tied to given address
+    record {} contactKey?;
+    # Object array containing value set information of pertinent attributes retrieved for address
+    AddressValueSets[] valueSets?;
+    # Source value of retrieved address
+    int 'source?;
+    # Type-value object specifying the AddressID for retrieved address
+    record {} addressID?;
+    # Status value of retrieved address
+    int status?;
+    # Ordinal value of retrieved address
+    int ordinal?;
+};
+
+# Represents an email definition in Salesforce Marketing Cloud
+public type EmailDefinition record {
+    # Subscribers of Email Definition
+    EmailDefinitionSubscriptions subscriptions;
+    # Date the definition was created
+    string createdDate;
+    # The unique identifier of this request
+    string requestId?;
+    # Name of the definition
+    string name;
+    # Date and time the definition was most recently changed
+    string modifiedDate;
+    # Options of Email Definitions
+    EmailDefinitionOptions options?;
+    # Unique, user-generated key to access the definition object
+    string definitionKey;
+    # User-provided description of the send definition
+    string description?;
+    # The external key of a sending classification defined in Email Studio Administration. Only transactional classifications are permitted. Default is default transactional
+    string classification?;
+    # Content of the Email Definition
+    CreateEmailDefinitionContent content;
+    # A unique object ID
+    string definitionId?;
+    # Operational state of the definition: active, inactive, or deleted. A message sent to an active definition is processed and delivered. A message sent to an inactive definition isn’t processed or delivered. Instead, the message is queued for later processing for up to three days
+    "active"|"inactive"|"deleted" status;
 };
 
 # Response containing a collection of journeys
@@ -60,16 +136,42 @@ public type JourneysList record {
     int pageSize;
 };
 
+# Request body for creating or updating a content asset
+public type UpsertAsset record {
+    # Reference to customer's private ID/name for the asset
+    string customerKey?;
+    # Container for asset data
+    record {} data?;
+    # Name of the asset, set by the client. 200 character maximum
+    string name;
+    # Description of the asset, set by the client
+    string description?;
+    # ID of the category the asset belongs to
+    record {} category?;
+    # The type that the Content attribute is in
+    string contentType?;
+    # The type of the asset saved as a name/ID pair
+    record {} assetType;
+};
+
+public type AddressValues record {
+    # An auto-generated guid representing a retrieved attribute value for the retrieved address
+    string valueID?;
+    # The value definition name of a retrieved attribute for retrieved address
+    string definitionName?;
+    # Actual value of a retrieved attribute for the retrieved address
+    string innerValue?;
+    # The value definition key of a retrieved attribute for retrieved address
+    string definitionKey?;
+    # The value definition ID of a retrieved attribute for retrieved address
+    string definitionID?;
+};
+
 public type DataExtensionRow record {
     # A map of key fields for the data extension row. The property names and types are arbitrary and depend on the data extension definition
     record {} keys;
     # A map of value fields for the data extension row. The property names and types are arbitrary and depend on the data extension definition
     record {} values;
-};
-
-public type FireEventResponse record {
-    # Unique ID for the fired event instance
-    string eventInstanceId?;
 };
 
 # Represents a single activity in a journey
@@ -90,6 +192,7 @@ public type Activity record {
     record {} configurationArguments?;
 };
 
+# Request body for validating an email address
 public type ValidateEmailRequest record {
     # List of validators to apply to the email address
     ("SyntaxValidator"|"MXValidator"|"ListDetectiveValidator")[] validators;
@@ -97,27 +200,16 @@ public type ValidateEmailRequest record {
     string email;
 };
 
-public type ContactMembershipRequest record {
-    # The list of unique keys that identify the contacts
-    @jsondata:Name {value: "ContactKeyList"}
-    string[] contactKeyList?;
+# Represents the Queries record for the operation: deleteContact
+public type DeleteContactQueries record {
+    # Type of contact to delete. Possible values are: ids, keys. If not specified, defaults to 'ids'
+    "ids"|"keys" 'type?;
 };
 
+# Represents an event definition in Journey Builder. An event definition is a reusable component that defines how an event is triggered and processed within a journey
 public type EventDefinition record {
-    #  Schema information for an event. The call uses this information to create a data extension associated with the Event Definition. Only required when not providing a dataExtensionId value
+    # Schema information for an event. The call uses this information to create a data extension associated with the Event Definition. Only required when not providing a dataExtensionId value
     record {} schema?;
-    # A link to the application extension that defines the configuration screens for this type. Journey Builder uses this ID to filter shared entry sources. For example, for the Event Definition to be visible in the Existing Entry sources panel in the UI, this field must be populated. To obtain this value, perform a GET eventDefinition on similar events in Journey Builder
-    string sourceApplicationExtensionId?;
-    # If true, makes this event visible in the Journey Builder Event Picker UI
-    boolean isVisibleInPicker?;
-    # Optional configuration data for the event definition. Can include additional settings or parameters
-    record {} configuration?;
-    # Optional description for the event definition, visible in UI
-    string description?;
-    # Type of the event definition (e.g., 'RestEvent')
-    "Event"|"ContactEvent"|"DateEvent"|"RestEvent" 'type;
-    # ID of the Data Extension used as the data source for the event. Optional if 'schema' is provided inline
-    string dataExtensionId?;
     # Unique customer key for the event definition. Used to reference this event in API calls and journeys
     string eventDefinitionKey;
     # Operation mode of the event definition. Can be 'Production' or 'Test'
@@ -126,8 +218,20 @@ public type EventDefinition record {
     EventDefinitionSchedule schedule?;
     # Optional metadata for the event definition. Can include additional information or settings
     record {} metaData?;
+    # A link to the application extension that defines the configuration screens for this type. Journey Builder uses this ID to filter shared entry sources. For example, for the Event Definition to be visible in the Existing Entry sources panel in the UI, this field must be populated. To obtain this value, perform a GET eventDefinition on similar events in Journey Builder
+    string sourceApplicationExtensionId?;
+    # If true, makes this event visible in the Journey Builder Event Picker UI
+    boolean isVisibleInPicker?;
+    # Optional configuration data for the event definition. Can include additional settings or parameters
+    record {} configuration?;
     # Display name for the event definition. Visible in Journey Builder UI
     string name;
+    # Optional description for the event definition, visible in UI
+    string description?;
+    # Type of the event definition (e.g., 'RestEvent')
+    "Event"|"ContactEvent"|"DateEvent"|"RestEvent" 'type;
+    # ID of the Data Extension used as the data source for the event. Optional if 'schema' is provided inline
+    string dataExtensionId?;
 };
 
 # Extras to include. Values:
@@ -138,6 +242,14 @@ public type EventDefinition record {
 # - '': No extras (default)
 public type Extras "all"|"activities"|"outcomes"|"stats"|"";
 
+# Represents a contact preference entity
+public type ContactPreferenceEntity record {
+    # Indicates whether a contact opted out of tracking information
+    boolean hasOptedOutTracking?;
+    # Unique ID for the contact
+    int contactID;
+};
+
 public type ActivityOutcomes record {
     # The unique customer key for the outcome.
     string 'key;
@@ -145,29 +257,29 @@ public type ActivityOutcomes record {
     string next;
 };
 
-# Request body for updating an existing journey
-public type UpdateJourney record {
-    # Journey UUID (optional if key is provided)
-    string id?;
-    # Customer-defined journey key
-    string 'key;
-    # Journey display name
-    string name;
-    # Journey description (optional)
-    string description?;
-    # Version number to update
-    int version;
-    # Journey spec version (0.5 or 1.0)
-    float workflowApiVersion;
-    # Current modifiedDate, required to prevent concurrent writes
-    string modifiedDate;
-    # Entry mode (e.g., APIEvent, Scheduled)
-    string entryMode?;
-    EventDefinition entryEvent?;
-    # Goals that define journey completion or exit criteria
-    Goal[] goals?;
-    # Activities that define the steps in the journey
-    Activity[] activities?;
+# Subscribers of Email Definition
+public type EmailDefinitionSubscriptions record {
+    # Adds the recipient’s email address and contact key as a subscriber key to subscriptions.list. Default is true
+    boolean autoAddSubscriber = true;
+    # The external key of the triggered send data extension. Each request inserts as a new row in the data extension
+    string dataExtension?;
+    # For email only: Updates the recipient’s contact key as a subscriber key with the provided email address and profile attributes to subscriptions.list. Default is true
+    boolean updateSubscriber = true;
+    # The external key of the list or all subscribers. Contains the subscriber keys and profile attributes
+    string list;
+};
+
+# Represents the Queries record for the operation: getCampaigns
+public type GetCampaignsQueries record {
+    # The field and sort method to use to sort the results. You can sort on these fields: modifiedDate, createdDate, name, and id. You can sort these fields in ascending (ASC) or descending (DESC) order. The default value is 'modifiedDate DESC'
+    @http:Query {name: "$orderBy"}
+    string orderBy?;
+    # The page number of results to retrieve. The default value is 1
+    @http:Query {name: "$page"}
+    int page = 1;
+    # The number of items to return on a page of results. The default and maximum value is 50
+    @http:Query {name: "$pageSize"}
+    int pageSize = 50;
 };
 
 public type FireEvent record {
@@ -181,9 +293,6 @@ public type FireEvent record {
     @jsondata:Name {value: "Data"}
     record {} data?;
 };
-
-# A journey status value to use to filter the results. The ScheduledToSend, Sent, and Stopped statuses exist only in single-send journeys. If you don't specify a status value, the API returns all journeys regardless of their statuses
-public type JourneyStatus "Deleted"|"Draft"|"Published"|"ScheduledToPublish"|"Stopped"|"Unpublished"|"ScheduledToSend"|"Sent";
 
 # Represents a goal in a journey
 public type Goal record {
@@ -206,6 +315,104 @@ public type Goal record {
 public type ContactMembership record {
     ContactMembershipDetail[] contactMemberships?;
     string[] contactsNotFound?;
+};
+
+public type SearchContactsByAttributeResponse record {
+    # Array of all address objects retrieved
+    Address[] addresses?;
+    # Page number of results retrieved
+    int pageNumber?;
+    # Indicates errors occured while processing the request
+    boolean hasErrors?;
+    # Service message ID value of the response
+    string serviceMessageID?;
+    # Page size of results retrieved
+    int pageSize?;
+    # Service message ID value of the request
+    string requestServiceMessageID?;
+    # Array of returned messages generated while processing the request
+    record {}[] resultMessages?;
+};
+
+# Response for importing a data extension file asynchronously
+public type ImportResponse record {
+    # Unique identifier for the request
+    string requestId;
+    # Unique identifier for the import operation
+    int id;
+    # Array of messages about the import request
+    record {}[] resultMessages;
+};
+
+# Response contains a list of contact keys with their created date and time
+public type SearchContactsByEmailResponse record {
+    # Current operation status
+    string operationStatus?;
+    # Service message ID for the response
+    string serviceMessageID?;
+    # List of contact keys with their created date and time
+    ChannelAddressResponseEntities[] channelAddressResponseEntities;
+    # Service message ID for the request
+    string requestServiceMessageID?;
+};
+
+# Response for upserting contact preferences
+public type UpsertContactPreferencesResponse record {
+    # Date and time of the response
+    string responseDateTime;
+    # Number of rows updated
+    int rowsUpdated;
+    # Service message ID for the response
+    string serviceMessageID;
+    # Number of rows deleted
+    int rowsDeleted;
+    # Service message ID for the request
+    string requestServiceMessageID;
+    # Array of messages about the request
+    record {}[] resultMessages;
+    # Represents a contact preference entity
+    ContactPreferenceEntity items;
+    # Number of rows inserted
+    int rowsInserted;
+};
+
+# The name of the contact attribute to search by
+public type ContactAttributeName "ContactKey"|"LastModifiedDate"|"SourceChannel"|"Status"|"AudienceID";
+
+# Represents a content asset in Salesforce Marketing Cloud
+public type Asset record {
+    # Unique identifier of the asset.
+    int id;
+    # Reference to customer's private ID/name for the asset.
+    string customerKey;
+    # The type that the Content attribute is in.
+    string contentType?;
+    # Container for asset data.
+    record {} data?;
+    # The type of the asset saved as a name/ID pair.
+    record {} assetType;
+    # Name of the asset, set by the client. 200 character maximum.
+    string name;
+    # Description of the asset, set by the client.
+    string description?;
+    # ID of the category the asset belongs to.
+    record {} category;
+};
+
+# Represents the Queries record for the operation: getEmailDefinitions
+public type GetEmailDefinitionsQueries record {
+    # Filter by status type. Accepted values are active, inactive, or deleted. Valid operations are eq and neq
+    @http:Query {name: "$filter"}
+    string filter?;
+    # Sort by a dimension. You can sort by only one dimension. Accepted values are definitionKey, name, createdDate, modifiedDate, and status
+    @http:Query {name: "$orderBy"}
+    string orderBy?;
+    # The page number of results to retrieve. The default value is 1
+    @http:Query {name: "$page"}
+    int page = 1;
+    # The number of items to return on a page of results. The default and maximum value is 50
+    @http:Query {name: "$pageSize"}
+    int pageSize = 50;
 };
 
 # Provides a set of configurations for controlling the behaviours when communicating with a remote HTTP endpoint.
@@ -252,8 +459,23 @@ public type ConnectionConfig record {|
     boolean laxDataBinding = true;
 |};
 
-public type ContactExitResponse record {
-    ContactExitStatus[] errors?;
+# Request body for creating a new contact
+public type UpsertContactRequest record {
+    # Unique ID for the contact. You must provide either a value for contactKey or contactID
+    string contactID?;
+    # Primary address for the contact. You must provide either a value for contactKey or contactID
+    string contactKey?;
+    # List of attribute sets for the contact
+    AttributeSet[] attributeSets;
+};
+
+public type SendEmailMessageResult record {
+    # A unique identifier for the message send attempt
+    string messageKey;
+    # Error message for this recipient, if any
+    string message?;
+    # Error code for this recipient, if any
+    int errorcode?;
 };
 
 # Represents the Queries record for the operation: getJourneyById
@@ -270,6 +492,37 @@ public type DeleteJourneyByIdQueries record {
     int versionNumber?;
 };
 
+# Response containing details of contact delete requests
+public type ContactDeleteRequestsResponse record {
+    # The start date in UTC for the query.
+    string startDateUtc;
+    # The end date in UTC for the query.
+    string endDateUtc;
+    # The status date in UTC.
+    string statusAsOfDateUtc;
+    # The current page number.
+    int pageNumber;
+    # The number of items per page.
+    int pageSize;
+    # List of operations.
+    record {}[] operations;
+    # ID of the request service message.
+    string requestServiceMessageID;
+    # The response date and time.
+    string responseDateTime;
+    # Array of result messages.
+    string[] resultMessages;
+    # ID of the service message.
+    string serviceMessageID;
+};
+
+public type ContactKeyEntities record {
+    # Contact key of the email channel address
+    string contactKey;
+    # Contact key creation date
+    string createDate;
+};
+
 public type ContactExitRequest record {
     # List of version numbers of the journey to remove contact from
     @jsondata:Name {value: "Versions"}
@@ -282,18 +535,476 @@ public type ContactExitRequest record {
     string definitionKey;
 };
 
-public type ContactExitStatus record {
-    string contactKey?;
-    string definitionKey?;
-    ContactExitStatusDetail[] status?;
-};
-
 # Represents the Queries record for the operation: getJourneyByKey
 public type GetJourneyByKeyQueries record {
     # A list of additional data to fetch. Available values are: all, activities, outcomes, and stats. Default is ''
     Extras extras?;
     # Version number of the journey to retrieve. If not provided, the latest version is returned
     int versionNumber?;
+};
+
+# Represents the Queries record for the operation: getContactDeleteRequests
+public type GetContactDeleteRequestsQueries record {
+    # Delete request status ID. Use it to filter delete requests by status. Valid values are 1 - Processing, 5 - Completed, and 7 - Invalid
+    1|5|7 statusid?;
+    # End date and time in UTC of the date range
+    string enddateutc?;
+    # Determines which property to use for sorting and the direction in which to sort the data
+    @http:Query {name: "$orderBy"}
+    string orderBy?;
+    # The page number of results to retrieve. The default value is 1
+    @http:Query {name: "$page"}
+    int page = 1;
+    # The number of items to return on a page of results. The default and maximum value is 50
+    @http:Query {name: "$pageSize"}
+    int pageSize = 50;
+    # Start date and time in UTC of the date range
+    string startdateutc?;
+};
+
+# Response for sending an email message. Each item in 'responses' corresponds to a recipient and may include error details if the send failed
+public type SendEmailMessageResponse record {
+    # Unique identifier for the request
+    string requestId;
+    # Array of message send results, one per recipient
+    SendEmailMessageResult[] responses;
+    # Overall error message, if any
+    string message?;
+    # Error code for the overall request, if any
+    int errorcode?;
+};
+
+# Request body for searching contacts by email channel address
+public type SearchContactsByEmailRequest record {
+    # List of email channel addresses for which a contact key is requested
+    string[] channelAddressList;
+    # Number of contact keys associated with an email channel address. The default value is 1
+    int maximumCount?;
+};
+
+# An object that contains default values for the journey, such as email expressions. Example: { "email": ["{{Event.event-key.EmailAddress}}", "{{Contact.Default.Email}}"] }
+public type Defaults record {|
+    # An ordered list of email expressions used to determine which email address to use as the default.
+    string[] email?;
+    string[]...;
+|};
+
+# Represents a campaign in Salesforce Marketing Cloud
+public type Campaign record {
+    # The date and time the campaign was created.
+    string createdDate;
+    # The date and time the campaign was last modified.
+    string modifiedDate;
+    # The unique identifier for the campaign.
+    string id;
+    # The name of the campaign.
+    string name;
+    # A description of the campaign.
+    string description;
+    # A code used to identify the campaign.
+    string campaignCode;
+    # A color code associated with the campaign.
+    string color;
+    # Indicates if the campaign is marked as a favorite.
+    boolean favorite;
+};
+
+# Retrieved contact preferences by contact key
+public type ContactPreferencesResponse record {
+    # Date and time of the retry response in UTC
+    int responseDateTime?;
+    # Number of rows returned
+    int rowsAffected?;
+    # Service message ID for the response
+    string serviceMessageID?;
+    # Service message ID for the request
+    string requestServiceMessageID?;
+    # Array of messages about the request. Includes details, such as resulttype and resultcode, about a bad request
+    record {}[] resultMessages?;
+    # Represents a contact preference entity
+    ContactPreferenceEntity value?;
+};
+
+public type AddressValueSets record {
+    # Default name assigned to represent the Set Definition of value Set information for retrieved address
+    string definitionName?;
+    # Object array containing property definition and actual value information of attributes retrieved for address
+    AddressValues[] values?;
+    # Default key assigned to represent the Set Definition of value Set information for retrieved address
+    string definitionKey?;
+    # Default ID assigned to represent the Set Definition of value Set information for retrieved address
+    string definitionID?;
+};
+
+# Represents the Queries record for the operation: getJourneys
+public type GetJourneysQueries record {
+    # Use this parameter to specify whether to return the most recent version of each journey that matches the filter criteria. The default value is true
+    boolean mostRecentVersionOnly = true;
+    # The version number of the workflowApiVersion value to retrieve. The default value is 1
+    decimal specificApiVersionNumber = 1;
+    # The field and sort method to use to sort the results. You can sort on these fields: ModifiedDate, Name, Performance. You can sort these fields in ascending (ASC) or descending (DESC) order. The default value is modifiedDate DESC
+    @http:Query {name: "$orderBy"}
+    string orderBy?;
+    # A search string to apply to the request. The API searches the name and description of each journey for this string, and returns all matching journeys
+    string nameOrDescription?;
+    # Additional information to include in the response. When you specify the all value for this parameter, the response includes a large amount of data. The volume of this data has a negative impact on the performance of this query
+    Extras extras?;
+    # A tag to use to filter the results. When you specify this parameter, the API returns only journeys with the specified tag
+    string tag?;
+    # The page number of results to retrieve. The default value is 1
+    @http:Query {name: "$page"}
+    int page = 1;
+    # The number of items to return on a page of results. The default and maximum value is 50
+    @http:Query {name: "$pageSize"}
+    int pageSize = 50;
+    # The type of definition to retrieve. The only accepted value is transactional, which retrieves all transactional send definitions
+    "transactional" definitionType?;
+    # The version number of the journey to retrieve. The default value is the currently published version or the latest version number that meets the other search criteria
+    int versionNumber?;
+    # A journey status value to use to filter the results. Possible values are: Deleted, Draft, Published, ScheduledToPublish, Stopped, Unpublished. The ScheduledToSend, Sent, and Stopped statuses exist only in single-send journeys. If you don't specify a status value, the API returns all journeys regardless of their statuses
+    JourneyStatus status?;
+};
+
+# Represents a complete journey definition
+public type Journey record {
+    # A unique identifier for this journey (read-only).
+    string id?;
+    # The iteration/version number of the journey (read-only).
+    int version?;
+    # The customer-defined unique key for this journey.
+    string 'key;
+    # Display name of the journey in the UI.
+    string name;
+    # Human-readable explanation of the journey's purpose.
+    string description?;
+    # Version of the Journey Spec used.
+    decimal workflowApiVersion;
+    # An array of goals containing a single object. Journeys only support one goal.
+    @constraint:Array {maxLength: 1}
+    Goal[] goals?;
+    # An array of triggers containing a single object. Journeys only support one trigger.
+    @constraint:Array {maxLength: 1}
+    EventDefinition[] triggers?;
+    # An object that contains default values for the journey, such as email expressions. Example: { "email": ["{{Event.event-key.EmailAddress}}", "{{Contact.Default.Email}}"] }
+    Defaults defaults?;
+    # An array that includes all the activities of the journey.
+    Activity[] activities?;
+};
+
+# Options of Email Definitions
+public type EmailDefinitionOptions record {
+    # Wraps links for tracking and reporting. Default is true
+    boolean trackLinks = true;
+};
+
+# Definition for a bulk ingest job targeting a data extension
+public type CreateBulkIngestJob record {
+    # Job status (New, Staging, Queued, Processing, Complete, Error)
+    "New"|"Staging"|"Queued"|"Processing"|"Complete"|"Error" jobStatus?;
+    # Data extension customer key (required)
+    @constraint:String {maxLength: 36}
+    string destinationCustomerKey;
+    # Supported data operation types (required)
+    "AddAndUpdate"|"AddAndDoNotUpdate"|"UpdateButDoNotAdd"|"Overwrite" updateType;
+    # Can specify a value up to 8 hours - this value drives the time allocated to stage data before starting a job. Note: For larger staging time (over 8 hours), contact support
+    @constraint:Int {maxValue: 8}
+    int jobExpirationHours?;
+};
+
+public type ChannelAddressResponseEntities record {
+    # Channel address of the email channel
+    string channelAddress;
+    # Contact key details associated with the channel address
+    ContactKeyEntities[] contactKeyDetails;
+};
+
+public type UpsertContactResponse record {
+    # Status of the operation (e.g., OK).
+    string operationStatus;
+    # Number of rows affected by the operation.
+    int rowsAffected;
+    # The unique key of the contact.
+    string contactKey;
+    # The system-generated ID of the contact.
+    int contactID;
+    # The type ID of the contact.
+    int contactTypeID?;
+    # Indicates whether the contact key is newly created.
+    boolean isNewContactKey;
+    # The ID of the request message.
+    string requestServiceMessageID?;
+    # The date and time of the response.
+    string responseDateTime;
+    # Indicates if any errors occurred during the operation.
+    boolean hasErrors;
+    # List of result messages.
+    string[] resultMessages?;
+    # The ID of the service message.
+    string serviceMessageID?;
+};
+
+# Response containing the summary of a data extension import operation
+public type ImportSummaryResponse record {
+    # Summary of queued data import
+    ImportSummary summary;
+    # Unique identifier for the request
+    string requestId;
+    # Array of messages about the import summary
+    record {}[] resultMessages;
+};
+
+# Represents a content category in Salesforce Marketing Cloud
+public type Category record {
+    # System-assigned ID for the category.
+    int id;
+    # Name of the category.
+    string name;
+    # ID of the parent category.
+    decimal parentId;
+    # The type of category, either asset or asset-shared.
+    string categoryType;
+    # ID of the member who creates the category.
+    decimal memberId;
+    # ID of the enterprise this business unit belongs to.
+    decimal enterpriseId;
+    # Stores the MIDs of business units this category is shared with and the sharing type. Only included in the response if CategoryType is asset-shared.
+    record {} sharingProperties?;
+    # Meta is used much like the data attribute on CMS assets but for internal functionality in Content Builder. If meta is returned, be sure to pass it through the API.
+    record {} meta?;
+};
+
+# Request body for sending an email message using a previously created email definition
+public type SendEmailMessageRequest record {
+    # Required. An array of recipient objects containing parameters and metadata for the recipients, such as send tracking and personalization attributes. If this object is present in the request, the recipient array (which is used to send messages to a single recipient) can't be included in the request
+    SendEmailMessagRecipients[] recipients;
+    # Required. The ID of the send definition
+    string definitionKey;
+    # Information used to personalize the message for the request. Written as key-value pairs. The attributes match profile attributes, content attributes, or triggered send data extension attributes
+    record {} attributes?;
+};
+
+public type ValidateEmailResponse record {
+    # Indicates whether the email address is valid
+    boolean valid?;
+    # The validator that failed, if any
+    string failedValidation?;
+    # The email address that was validated
+    string email?;
+};
+
+# Filter condition for searching contacts by attribute
+public type ContactAttributeFilterCondition record {
+    # Filter condition operator name
+    string filterConditionOperator;
+    # Value for attribute used in search criteria for contacts and associated addresses. When using the "LastModifiedDate" attributeName, separate the values for start and end date in the filterConditionValue with an "AND". The "Channel" attributeName supports these values: MOBILE PUSH LINE EMAIL
+    string filterConditionValue;
+};
+
+# Summary of queued data import
+public type ImportSummary record {
+    # Status of the import operation
+    string importStatus;
+    # Target object ID for the import
+    string targetId;
+    # End date and time of the import operation
+    string endDate;
+    # Number of restricted rows found in the import
+    int restrictedRows;
+    # Type of update performed on the target
+    string targetUpdateType;
+    # Total number of rows processed in the import
+    int totalRows;
+    # Target object key for the import
+    string targetKey;
+    # Number of rows successfully imported
+    int successfulRows;
+    # Unique identifier for the import operation
+    string importId;
+    # Number of duplicate rows found in the import
+    int duplicateRows;
+    # Unique identifier for the import summary
+    int id;
+    # Number of errors encountered during the import
+    int errors;
+    # Start date and time of the import operation
+    string startDate;
+};
+
+# Represents a campaign in Salesforce Marketing Cloud
+public type UpsertCampaign record {
+    # The name of the campaign.
+    string name;
+    # A description of the campaign.
+    string description;
+    # A code used to identify the campaign.
+    string campaignCode;
+    # A color code associated with the campaign.
+    string color;
+    # Indicates if the campaign is marked as a favorite.
+    boolean favorite;
+};
+
+# Content of the Email Definition
+public type CreateEmailDefinitionContent record {
+    # Unique identifier of the content asset
+    string customerKey;
+};
+
+public type SendEmailMessagRecipients record {
+    # A unique identifier that you can use to track the status of the message. If not provided, the system generates one. Must be unique among all of the keys used in your business unit over the prior 72 hours. Max 100 characters
+    string messageKey?;
+    # Required. A unique identifier for the subscriber. You can create a contact key at send time if the contact isn’t already in Marketing Cloud Engagement
+    string contactKey;
+    # Personalization information for the recipient. Written as key-value pairs. The attributes match profile attributes, content attributes, or triggered send data extension attributes
+    record {} attributes?;
+    # The recipient's email address
+    string to?;
+};
+
+public type FireEventResponse record {
+    # Unique ID for the fired event instance
+    string eventInstanceId?;
+};
+
+public type ContactMembershipRequest record {
+    # The list of unique keys that identify the contacts
+    @jsondata:Name {value: "ContactKeyList"}
+    string[] contactKeyList?;
+};
+
+# Request body for updating an existing journey
+public type UpdateJourney record {
+    # Journey UUID (optional if key is provided)
+    string id?;
+    # Customer-defined journey key
+    string 'key;
+    # Journey display name
+    string name;
+    # Journey description (optional)
+    string description?;
+    # Version number to update
+    int version;
+    # Journey spec version (0.5 or 1.0)
+    float workflowApiVersion;
+    # Current modifiedDate, required to prevent concurrent writes
+    string modifiedDate;
+    # Entry mode (e.g., APIEvent, Scheduled)
+    string entryMode?;
+    # Represents an event definition in Journey Builder. An event definition is a reusable component that defines how an event is triggered and processed within a journey
+    EventDefinition entryEvent?;
+    # Goals that define journey completion or exit criteria
+    Goal[] goals?;
+    # Activities that define the steps in the journey
+    Activity[] activities?;
+};
+
+# A journey status value to use to filter the results. The ScheduledToSend, Sent, and Stopped statuses exist only in single-send journeys. If you don't specify a status value, the API returns all journeys regardless of their statuses
+public type JourneyStatus "Deleted"|"Draft"|"Published"|"ScheduledToPublish"|"Stopped"|"Unpublished"|"ScheduledToSend"|"Sent";
+
+# Response containing a collection of content assets
+public type AssetList record {
+    # Total number of assets.
+    int count;
+    # Current page number.
+    int page;
+    # Number of items per page.
+    int pageSize;
+    # Navigation links.
+    record {} links;
+    # List of asset items.
+    Asset[] items;
+};
+
+# Request body for creating a new email definition
+public type CreateEmailDefinition record {
+    # Subscribers of Email Definition
+    EmailDefinitionSubscriptions subscriptions;
+    # Name of the definition. Must be unique
+    string name;
+    # Options of Email Defintion
+    CreateEmailDefinitionOptions options?;
+    # Unique, user-generated key to access the definition object
+    string definitionKey;
+    # User-provided description of the send definition
+    string description?;
+    # The external key of a sending classification defined in Email Studio Administration. Only transactional classifications are permitted. Default is default transactional
+    string classification?;
+    # Content of the Email Definition
+    CreateEmailDefinitionContent content;
+    # Operational state of the definition: active, inactive, or deleted. A message sent to an active definition is processed and delivered. A message sent to an inactive definition isn’t processed or delivered. Instead, the message is queued for later processing for up to three days
+    "active"|"inactive"|"deleted" status?;
+};
+
+# Represents an item in an attribute set, containing multiple attributes
+public type AttributeSetItem record {
+    # List of name/value pairs for the attributes
+    AttributeSetValue[] values;
+};
+
+public type ContactExitResponse record {
+    ContactExitStatus[] errors?;
+};
+
+# Request to upsert contact preferences
+public type ContactPreferencesRequest record {
+    # Array of contact IDs and other properties to add
+    ContactPreferenceEntity[] items;
+};
+
+# Represents a name/value pair for an attribute
+public type AttributeSetValue record {
+    # Name of the attribute
+    string name;
+    # Value of the attribute
+    string|boolean|decimal|int value;
+};
+
+public type ContactExitStatus record {
+    string contactKey?;
+    string definitionKey?;
+    ContactExitStatusDetail[] status?;
+};
+
+# Request body for importing a data extension file. Inherits properties from fileInfo, target, mapping, and transport
+public type ImportRequest record {
+    # Name of the source file (compressed or uncompressed). In case of multiple files, specify the folder name
+    string specifier;
+    # Indicates if the import should continue past row level errors. Defaults to true
+    boolean allowErrors;
+    # Indicates if the import respects double quotes (") as a text delimiter
+    string standardQuotedStrings?;
+    # Indicates if the specifier has more than one file to import. Defaults to false
+    string hasMultipleFiles;
+    # Default action against a row if no explicit action code is specified
+    string controlColumnDefaultAction?;
+    # The type of the object being imported into. The only supported value is DataExtension
+    string 'type;
+    # Indicates how the content is delimited
+    string contentType;
+    # Column name in the source file that controls row-level action. For example, add, delete, update and so on
+    string controlColumn?;
+    # The unique (customerKey) reference of the data extension
+    string 'key;
+    # The type of import operation to perform against the destination data extension
+    string updateType;
+    # Indicates the type of field mapping
+    string fieldMappingType;
+    # The external key of an active file transfer location
+    string transportKey?;
+};
+
+# Email definition object
+public type EmailDefinitionSummary record {
+    # Creation date of the email definition
+    string createdDate;
+    # Name of the email definition
+    string name;
+    # Last modification date of the email definition
+    string modifiedDate;
+    # Unique key for the email definition
+    string definitionKey;
+    # Status of the email definition
+    string status;
 };
 
 # Represents the Queries record for the operation: deleteJourneyByKey
@@ -304,6 +1015,24 @@ public type DeleteJourneyByKeyQueries record {
 
 # An array of data extension rows to be upserted
 public type DataExtensionRowSet DataExtensionRow[];
+
+# Represents the Queries record for the operation: getCategories
+public type GetCategoriesQueries record {
+    # Filter by ParentId using a simple operator and value. ParentId is the only allowed field. If you don't provide a $filter parameter, the query returns all the Categories in your MID
+    @http:Query {name: "$filter"}
+    string filter?;
+    # Determines which category property to use for sorting, and also determines the direction in which to sort the data. If you don't provide the $orderBy parameter, the results are sorted by category ID in ascending order
+    @http:Query {name: "$orderBy"}
+    string orderBy?;
+    # Determines which MIDs the query results come from. To return categories that reside in your MID, either don't add the scope parameter or call the endpoint like this: .../categories?scope=Ours. To return categories that are shared to your MID, or that you have shared with other MIDs, call the endpoint like this: .../categories?scope=Shared. To return all categories visible to your MID, call the endpoint like this: .../categories?scope=Ours,Shared
+    "Ours"|"Shared"|"Ours,Shared" scope?;
+    # The page number of results to retrieve. The default value is 1
+    @http:Query {name: "$page"}
+    int page = 1;
+    # The number of items to return on a page of results. The default and maximum value is 50
+    @http:Query {name: "$pageSize"}
+    int pageSize = 50;
+};
 
 # Represents the Queries record for the operation: getEventDefinitions
 public type GetEventDefinitionsQueries record {
@@ -326,14 +1055,52 @@ public type ContactExitStatusDetail record {
     int version?;
 };
 
-# An object that contains default values for the journey, such as email expressions. Example: { "email": ["{{Event.event-key.EmailAddress}}", "{{Contact.Default.Email}}"] }
-public type Defaults record {|
-    # An ordered list of email expressions used to determine which email address to use as the default.
-    string[] email?;
-    string[]...;
-|};
+# Represents the Queries record for the operation: searchContactPreferences
+public type SearchContactPreferencesQueries record {
+    # For contact key, use 1. For contact ID, use 2
+    @http:Query {name: "ReferenceType"}
+    1|2 referenceType;
+};
+
+# Represents the Queries record for the operation: deleteAsset
+public type DeleteAssetQueries record {
+    # Permanently deletes the file and its URL in Akamai when the associated file is deleted in Content Builder. A value of 1 permanently deletes the file. If isCDNDelete is unspecified or if the value is 0, it doesn’t permanently delete the file
+    boolean isCDNDelete?;
+};
 
 public type ContactExitStatusResponse ContactExitStatus;
+
+# Response containing a collection of content categories
+public type CategoryList record {
+    # Total number of categories.
+    int count;
+    # Current page number.
+    int page;
+    # Number of items per page.
+    int pageSize;
+    # Navigation links.
+    record {} links;
+    # List of content categories.
+    Category[] items;
+};
+
+# Represents a set of attributes for a contact
+public type AttributeSet record {
+    # Name of the attribute set (e.g., 'Email Addresses', 'Email Demographics')
+    string name;
+    # List of items for the attribute set
+    AttributeSetItem[] items;
+};
+
+# Response for creating a bulk ingest job targeting a data extension
+public type CreateBulkIngestJobResponse record {
+    # Request ID for tracking the operation
+    string requestId;
+    # Unique identifier for the bulk API definition
+    string bulkApiDefinitionId;
+    # Array of messages about the bulk ingest job
+    record {}[] resultMessages;
+};
 
 # Optionally define a schedule for the event. Used to trigger the event on a recurring basis
 public type EventDefinitionSchedule record {
@@ -373,33 +1140,58 @@ public type EventDefinitionSchedule record {
     "First"|"Second"|"Third"|"Fourth"|"Last" ScheduledWeek?;
 };
 
-# Represents the Queries record for the operation: getJourneys
-public type GetJourneysQueries record {
-    # Use this parameter to specify whether to return the most recent version of each journey that matches the filter criteria. The default value is true
-    boolean mostRecentVersionOnly = true;
-    # The version number of the workflowApiVersion value to retrieve. The default value is 1
-    decimal specificApiVersionNumber = 1;
-    # The field and sort method to use to sort the results. You can sort on these fields: ModifiedDate, Name, Performance. You can sort these fields in ascending (ASC) or descending (DESC) order. The default value is modifiedDate DESC
+# Represents the Queries record for the operation: getAssets
+public type GetAssetsQueries record {
+    # Filter by an asset's property using a simple operator and value
+    @http:Query {name: "$filter"}
+    string filter?;
+    # Determines which asset property to use for sorting, and also determines the direction in which to sort the data. If you don't provide the $orderBy parameter, the results are sorted by asset ID in ascending order
     @http:Query {name: "$orderBy"}
     string orderBy?;
-    # A search string to apply to the request. The API searches the name and description of each journey for this string, and returns all matching journeys
-    string nameOrDescription?;
-    # Additional information to include in the response. When you specify the all value for this parameter, the response includes a large amount of data. The volume of this data has a negative impact on the performance of this query
-    Extras extras?;
-    # A tag to use to filter the results. When you specify this parameter, the API returns only journeys with the specified tag
-    string tag?;
+    # Comma-delimited string of asset properties used to reduce the size of your results to only the properties you need
+    @http:Query {name: "$fields"}
+    string fields?;
     # The page number of results to retrieve. The default value is 1
     @http:Query {name: "$page"}
     int page = 1;
     # The number of items to return on a page of results. The default and maximum value is 50
     @http:Query {name: "$pageSize"}
     int pageSize = 50;
-    # The type of definition to retrieve. The only accepted value is transactional, which retrieves all transactional send definitions
-    "transactional" definitionType?;
-    # The version number of the journey to retrieve. The default value is the currently published version or the latest version number that meets the other search criteria
-    int versionNumber?;
-    # A journey status value to use to filter the results. Possible values are: Deleted, Draft, Published, ScheduledToPublish, Stopped, Unpublished. The ScheduledToSend, Sent, and Stopped statuses exist only in single-send journeys. If you don't specify a status value, the API returns all journeys regardless of their statuses
-    JourneyStatus status?;
+};
+
+# Request to search contact preferences
+public type SearchPreferencesRequest record {
+    # Array of contact keys or IDs to search for preferences
+    (string|int)[] items;
+};
+
+public type ContactDeleteResponse record {
+    # Indicates if the operation was initiated successfully
+    boolean operationInitiated;
+    # Unique identifier for the initiated operation
+    int operationID;
+    # ID of the request message
+    string requestServiceMessageID;
+    # Date and time of the response
+    string responseDateTime;
+    # Indicates if there were any errors during the operation
+    boolean hasErrors;
+    # List of result messages from the operation
+    record {}[] resultMessages;
+    # ID of the service message
+    string serviceMessageID;
+};
+
+# Options of Email Defintion
+public type CreateEmailDefinitionOptions record {
+    # Include CC email addresses with every send. To CC dynamically at send time, create a profile attribute and use the %%attribute%% syntax
+    string[] cc?;
+    # Include BCC email addresses with every send. To BCC dynamically at send time, create a profile attribute and use the %%attribute%% syntax
+    string[] bcc?;
+    # Wraps links for tracking and reporting. Default is true
+    boolean trackLinks = true;
+    # A value of true updates the send definition to make it available in Journey Builder as a Transactional Send Journey. After the definition is tied to a Transactional Send Journey, the definition remains part of Journey Builder. You can’t unlink a journey from a definition without recreating the transactional send definition
+    boolean createJourney?;
 };
 
 public type ContactMembershipDetail record {
@@ -408,32 +1200,43 @@ public type ContactMembershipDetail record {
     int version?;
 };
 
-# Represents a complete journey definition
-public type Journey record {
-    # A unique identifier for this journey (read-only).
-    string id?;
-    # The iteration/version number of the journey (read-only).
-    int version?;
-    # The customer-defined unique key for this journey.
-    string 'key;
-    # Display name of the journey in the UI.
+# Represents a content category in Salesforce Marketing Cloud
+public type CreateCategory record {
+    # Name of the category.
     string name;
-    # Human-readable explanation of the journey's purpose.
-    string description?;
-    # Version of the Journey Spec used.
-    decimal workflowApiVersion;
-    # An array of goals containing a single object. Journeys only support one goal.
-    @constraint:Array {maxLength: 1}
-    Goal[] goals?;
-    # An array of triggers containing a single object. Journeys only support one trigger.
-    @constraint:Array {maxLength: 1}
-    EventDefinition[] triggers?;
-    # An object that contains default values for the journey, such as email expressions. Example: { "email": ["{{Event.event-key.EmailAddress}}", "{{Contact.Default.Email}}"] }
-    Defaults defaults?;
-    # An array that includes all the activities of the journey.
-    Activity[] activities?;
+    # ID of the parent category.
+    decimal parentId;
+    # The type of category, either asset or asset-shared.
+    string categoryType?;
+    # ID of the member who creates the category.
+    decimal memberId?;
+    # ID of the enterprise this business unit belongs to.
+    decimal enterpriseId?;
+    # Stores the MIDs of business units this category is shared with and the sharing type. Only included in the response if CategoryType is asset-shared.
+    record {} sharingProperties?;
 };
 
 public type ContactMembershipResponse record {
     ContactMembership results?;
+};
+
+public type CampaignList record {
+    # Total number of campaigns.
+    int count;
+    # Current page number.
+    int page;
+    # Number of items per page.
+    int pageSize;
+    # Navigation links.
+    record {} links;
+    # List of campaign items.
+    Campaign[] items;
+};
+
+public type ContactDeleteRequest record {
+    # List of contact keys or IDs to delete
+    string[] values;
+    # Type of delete operation to perform
+    @jsondata:Name {value: "DeleteOperationType"}
+    "ContactAndAttributes"|"AttributesOnly" deleteOperationType;
 };
