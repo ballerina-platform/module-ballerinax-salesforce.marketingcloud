@@ -85,9 +85,7 @@ service /upload on new http:Listener(9090) {
 
 function downloadAndEncodeFile(string fileUrl) returns string|error {
     http:Client fileDownload = check new (fileUrl);
-    http:Response res = check fileDownload->get("");
-    byte[] fileBytes = check res.getBinaryPayload();
-    byte[] base64Encoded = <byte[]>(check mime:base64Encode(fileBytes));
-    string encodedFile = check string:fromBytes(base64Encoded);
-    return encodedFile;
+    byte[] fileBytes = check fileDownload->get("");
+    byte[] base64Encoded = check mime:base64Encode(fileBytes).ensureType();
+    return string:fromBytes(base64Encoded);
 }
