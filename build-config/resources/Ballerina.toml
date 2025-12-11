@@ -5,7 +5,7 @@ name = "salesforce.marketingcloud"
 version = "@toml.version@"
 license = ["Apache-2.0"]
 authors = ["Ballerina"]
-keywords = ["marketing", "sales", "communication"]
+keywords = ["marketing", "sales", "communication", "Vendor/Salesforce", "Area/Social Media Marketing", "Type/Connector"]
 icon = "icon.png" 
 repository = "https://github.com/ballerina-platform/module-ballerinax-salesforce.marketingcloud"
 
