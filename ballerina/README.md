@@ -1,8 +1,15 @@
 ## Overview
 
-[Salesforce Marketing Cloud](https://www.salesforce.com/products/marketing-cloud/overview/) is a leading digital marketing platform that enables businesses to manage and automate customer journeys, email campaigns, and personalized messaging.
+[Salesforce Marketing Cloud](https://www.salesforce.com/products/marketing-cloud/overview/) is a digital marketing platform that enables businesses to manage and automate customer journeys, email campaigns, and personalized messaging.
 
-The `ballerinax/salesforce.marketingcloud` package provides APIs to connect and interact with [Salesforce Marketing Cloud API](https://developer.salesforce.com/docs/atlas.en-us.mc-apis.meta/mc-apis/) endpoints, supporting a wide range of marketing automation and journey management
+The Salesforce Marketing Cloud connector offers APIs to connect and interact with Salesforce Marketing Cloud API endpoints, supporting various marketing automation and journey management tasks.
+
+### Key Features
+
+- Automate customer journeys and marketing workflows
+- Manage and send personalized email campaigns
+- Integrate with Salesforce Marketing Cloud API endpoints
+- Real-time messaging and engagement tracking
 
 ## Setup guide
 
