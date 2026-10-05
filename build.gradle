@@ -57,8 +57,14 @@ allprojects {
 
 def moduleVersion = project.version.replace("-SNAPSHOT", "")
 
-task build {
-    dependsOn(':salesforce.marketingcloud-ballerina:build')
+if (!tasks.names.contains('build')) {
+    tasks.register('build') {
+        dependsOn(':salesforce.marketingcloud-ballerina:build')
+    }
+} else {
+    tasks.named('build') {
+        dependsOn(':salesforce.marketingcloud-ballerina:build')
+    }
 }
 
 release {
