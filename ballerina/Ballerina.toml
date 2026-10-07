@@ -2,7 +2,7 @@
 distribution = "2201.12.0"
 org = "ballerinax"
 name = "salesforce.marketingcloud"
-version = "1.0.3"
+version = "1.0.2"
 license = ["Apache-2.0"]
 authors = ["Ballerina"]
 keywords = ["Marketing", "Sales", "Communication", "Vendor/Salesforce", "Area/Marketing & Social Media", "Type/Connector"]
