@@ -18,10 +18,19 @@
 
 import org.apache.tools.ant.taskdefs.condition.Os
 
+import javax.inject.Inject
+
+abstract class ExecHelper {
+    @Inject
+    abstract ExecOperations getExecOperations()
+}
+
+def execHelper = project.objects.newInstance(ExecHelper)
+
 tasks.register('build') {
     doLast {
         try {
-            exec {
+            execHelper.execOperations.exec {
                 workingDir project.projectDir
                 println("Working dir: ${workingDir}")
                 if (Os.isFamily(Os.FAMILY_WINDOWS)) {
